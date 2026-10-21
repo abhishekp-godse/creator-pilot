@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CreatorPilot - AI Growth Coach (Live Interactive Preview)</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b0f19; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+  </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-[#0f172a]/90 backdrop-blur-md border-b border-slate-800 px-6 py-3.5">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-emerald-400 flex items-center justify-center shadow-lg shadow-indigo-500/20 font-black text-xl">
+          🚀
+        </div>
+        <div>
+          <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent">
+            CreatorPilot
+          </span>
+          <span class="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            Interactive Coach Active
+          </span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button onclick="openModal('titleScorerModal')" class="px-3.5 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 text-sm font-medium border border-slate-700/60 transition">
+          📊 Title Scorer
+        </button>
+        <button onclick="openModal('weeklyPlanModal')" class="px-3.5 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 text-sm font-medium border border-slate-700/60 transition">
+          📅 Weekly Plan
+        </button>
+        <button onclick="openModal('coachModal')" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white text-sm font-semibold shadow-md shadow-indigo-600/30 transition">
+          🎤 Talk to AI Coach
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6">
+
+    <!-- Proactive Notifications Banner -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 my-4">
+      <div class="flex items-start gap-3 p-3.5 rounded-xl border border-amber-500/30 bg-amber-500/10 text-amber-200">
+        <span class="text-xl">⚠️</span>
+        <div>
+          <div class="flex items-center justify-between"><h4 class="font-semibold text-xs text-white uppercase">Upload Gap Alert</h4><span class="text-[10px] text-slate-400">Just now</span></div>
+          <p class="text-xs mt-1 text-slate-300">You haven't posted in 6 days. Audience engagement drops after day 7.</p>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-3 p-3.5 rounded-xl border border-indigo-500/30 bg-indigo-500/10 text-indigo-200">
+        <span class="text-xl">⏰</span>
+        <div>
+          <div class="flex items-center justify-between"><h4 class="font-semibold text-xs text-white uppercase">Best-Time Alert</h4><span class="text-[10px] text-slate-400">2:30 PM</span></div>
+          <p class="text-xs mt-1 text-slate-300">Your audience is most active at 7:00 PM EST today. Post now.</p>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-3 p-3.5 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-200">
+        <span class="text-xl">🔥</span>
+        <div>
+          <div class="flex items-center justify-between"><h4 class="font-semibold text-xs text-white uppercase">Streak at Risk</h4><span class="text-[10px] text-slate-400">1h ago</span></div>
+          <p class="text-xs mt-1 text-slate-300">4-week streak active! Post within 48h to maintain your multiplier.</p>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-3 p-3.5 rounded-xl border border-slate-700/60 bg-slate-800/40 text-slate-300">
+        <span class="text-xl">🛡️</span>
+        <div>
+          <div class="flex items-center justify-between"><h4 class="font-semibold text-xs text-white uppercase">Burnout Guard</h4><span class="text-[10px] text-slate-400">Healthy</span></div>
+          <p class="text-xs mt-1 text-slate-300">Cadence is optimal. Batch record 2 videos this Friday for rest.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Row: Channel Profile, Health Score, Monetization Readiness -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 my-6">
+      
+      <!-- Profile Card -->
+      <div class="bg-[#141d2f]/90 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between">
+        <div class="flex items-center gap-4">
+          <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150" class="w-16 h-16 rounded-2xl border-2 border-indigo-500/40 object-cover shadow-lg" />
+          <div>
+            <h2 class="text-xl font-bold text-white flex items-center gap-1.5">CodeCraft Studio <span class="text-emerald-400 text-sm">✓</span></h2>
+            <p class="text-sm text-slate-400">@codecraftstudio</p>
+            <span class="inline-block mt-1 text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
+              Web Dev & AI Engineering
+            </span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 mt-6 pt-4 border-t border-slate-800 text-center">
+          <div><div class="text-xs text-slate-400">Subs</div><div class="text-lg font-bold text-white">28,450</div></div>
+          <div class="border-x border-slate-800"><div class="text-xs text-slate-400">Views</div><div class="text-lg font-bold text-white">1.84M</div></div>
+          <div><div class="text-xs text-slate-400">Videos</div><div class="text-lg font-bold text-white">86</div></div>
+        </div>
+      </div>
+
+      <!-- Health Score -->
+      <div class="bg-[#141d2f]/90 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-base font-bold text-white">Growth Health Score</h3>
+            <p class="text-xs text-slate-400">Weighted cross-metric algorithm</p>
+          </div>
+          <div><span class="text-3xl font-black text-emerald-400">82</span><span class="text-xs text-slate-400"> / 100</span></div>
+        </div>
+
+        <div class="space-y-3 mt-4">
+          <div>
+            <div class="flex justify-between text-xs mb-1"><span class="text-slate-300">Consistency (40%)</span><span class="text-emerald-400 font-bold">82%</span></div>
+            <div class="w-full h-2 rounded-full bg-slate-800"><div class="h-full bg-emerald-500 rounded-full" style="width: 82%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-xs mb-1"><span class="text-slate-300">Engagement (35%)</span><span class="text-indigo-400 font-bold">78%</span></div>
+            <div class="w-full h-2 rounded-full bg-slate-800"><div class="h-full bg-indigo-500 rounded-full" style="width: 78%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-xs mb-1"><span class="text-slate-300">Trend Alignment (25%)</span><span class="text-violet-400 font-bold">88%</span></div>
+            <div class="w-full h-2 rounded-full bg-slate-800"><div class="h-full bg-violet-500 rounded-full" style="width: 88%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Monetization Tracker -->
+      <div class="bg-[#141d2f]/90 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between">
+            <h3 class="text-base font-bold text-white">Monetization Readiness</h3>
+            <span class="text-xs font-semibold px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400">87% Ready</span>
+          </div>
+          <p class="text-xs text-slate-400">Progress to YouTube Partner Program</p>
+        </div>
+
+        <div class="space-y-4 my-2">
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <span class="text-slate-300">Subscribers Goal</span>
+              <span class="font-bold text-white">28,450 / 1,000 <span class="text-emerald-400">✓ Done</span></span>
+            </div>
+            <div class="w-full h-2 rounded-full bg-slate-800"><div class="h-full bg-emerald-400 rounded-full" style="width: 100%"></div></div>
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <span class="text-slate-300">Watch Hours Goal</span>
+              <span class="font-bold text-indigo-300">3,480 / 4,000 hrs (87%)</span>
+            </div>
+            <div class="w-full h-2 rounded-full bg-slate-800"><div class="h-full bg-gradient-to-r from-indigo-500 to-emerald-400 rounded-full" style="width: 87%"></div></div>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/50 rounded-xl p-2.5 text-[11px] text-slate-300 flex items-center justify-between">
+          <span>🔥 Streak: <strong class="text-white">4 weeks</strong></span>
+          <span>Only <strong class="text-emerald-400">520 watch hours</strong> to partner approval!</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 30-Day Growth Forecast Chart -->
+    <div class="bg-[#141d2f]/90 border border-slate-800 rounded-2xl p-6 my-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+        <div>
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">📈 30-Day Predictive Growth Forecast</h3>
+          <p class="text-xs text-slate-400">Calibrated Time-Series Prophet Model with Upper/Lower 95% Confidence Intervals</p>
+        </div>
+        <div class="flex items-center gap-4 bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2">
+          <div>
+            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">Projected 30d Subs</span>
+            <span class="text-base font-extrabold text-white">32,840</span>
+          </div>
+          <div class="border-l border-slate-700 pl-4">
+            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">Predicted Gain</span>
+            <span class="text-base font-extrabold text-emerald-400">+4,390 (+15.4%)</span>
+          </div>
+        </div>
+      </div>
+      <div class="h-64 w-full">
+        <canvas id="growthChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Trends & Content Gaps -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 my-6">
+      
+      <!-- Content Gap Finder -->
+      <div class="bg-[#141d2f]/90 border border-slate-800 rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">🔍 Audience Content Gap Finder</h3>
+          <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-300">Mined from Comments</span>
+        </div>
+        <p class="text-xs text-slate-400 mb-4">High-demand audience inquiries not yet covered in your catalog.</p>
+
+        <div class="space-y-3">
+          <div class="p-3.5 rounded-xl bg-slate-800/40 border border-slate-700/60">
+            <div class="flex justify-between items-start">
+              <h4 class="font-semibold text-sm text-white">FastAPI JWT & Refresh Token Authentication</h4>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-500/10 text-rose-300">High Demand</span>
+            </div>
+            <p class="text-xs text-slate-400 italic mt-1">"Loved the FastAPI breakdown! Can you please make a video on user authentication with JWT and refresh tokens?"</p>
+            <div class="mt-2 text-[11px] text-slate-400 flex justify-between">
+              <span>🔥 89+ audience requests</span>
+              <button onclick="testTitle('FastAPI Authentication Masterclass: JWTs, Refresh Tokens & Security')" class="text-indigo-400 hover:underline">Test in Scorer →</button>
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-slate-800/40 border border-slate-700/60">
+            <div class="flex justify-between items-start">
+              <h4 class="font-semibold text-sm text-white">Next.js 15 Server Actions with Python Backend</h4>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-500/10 text-rose-300">High Demand</span>
+            </div>
+            <p class="text-xs text-slate-400 italic mt-1">"Please make a full video on Next.js 15 Server Actions with Python backend!"</p>
+            <div class="mt-2 text-[11px] text-slate-400 flex justify-between">
+              <span>🔥 103+ audience requests</span>
+              <button onclick="testTitle('Connecting Next.js 15 Server Actions to a Python FastAPI Backend')" class="text-indigo-400 hover:underline">Test in Scorer →</button>
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-slate-800/40 border border-slate-700/60">
+            <div class="flex justify-between items-start">
+              <h4 class="font-semibold text-sm text-white">Fixing CORS Policy Errors in React & FastAPI</h4>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-500/10 text-amber-300">Medium Demand</span>
+            </div>
+            <p class="text-xs text-slate-400 italic mt-1">"Why did my CORS policy block the React frontend on localhost?"</p>
+            <div class="mt-2 text-[11px] text-slate-400 flex justify-between">
+              <span>🔥 54+ audience requests</span>
+              <button onclick="testTitle('Fixing CORS in 5 Minutes (React, FastAPI & Express)')" class="text-indigo-400 hover:underline">Test in Scorer →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trend Intelligence -->
+      <div class="bg-[#141d2f]/90 border border-slate-800 rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">🧭 Niche Trend Intelligence</h3>
+          <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400">Live Velocity</span>
+        </div>
+        <p class="text-xs text-slate-400 mb-4">Trending keywords in tech matched to your channel niche.</p>
+
+        <div class="space-y-3">
+          <div class="p-3.5 rounded-xl bg-slate-800/40 border border-slate-700/60">
+            <div class="flex justify-between items-center">
+              <span class="text-sm font-bold text-white">Next.js 15 Server Actions & React 19</span>
+              <span class="text-xs font-bold text-emerald-400 px-2 py-0.5 rounded bg-emerald-500/10">94% Fit</span>
+            </div>
+            <div class="flex items-center gap-3 text-xs text-slate-400 my-1">
+              <span class="text-emerald-400">+140% Search Velocity</span>
+              <span>•</span>
+              <span class="text-amber-400">⏳ Peak expires in 14 days</span>
+            </div>
+            <p class="text-xs text-slate-300 italic bg-slate-900/60 p-2 rounded">Hook: "Why React 19 changes full-stack architecture forever"</p>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-slate-800/40 border border-slate-700/60">
+            <div class="flex justify-between items-center">
+              <span class="text-sm font-bold text-white">Local LLMs with Ollama and LangChain</span>
+              <span class="text-xs font-bold text-emerald-400 px-2 py-0.5 rounded bg-emerald-500/10">91% Fit</span>
+            </div>
+            <div class="flex items-center gap-3 text-xs text-slate-400 my-1">
+              <span class="text-emerald-400">+220% Search Velocity</span>
+              <span>•</span>
+              <span class="text-amber-400">⏳ Peak expires in 21 days</span>
+            </div>
+            <p class="text-xs text-slate-300 italic bg-slate-900/60 p-2 rounded">Hook: "Run deepseek locally without paying API bills"</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Floating Ask Coach Button -->
+  <button onclick="openModal('coachModal')" class="fixed bottom-6 right-6 z-30 flex items-center gap-2 px-6 py-4 rounded-full bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 text-white font-bold shadow-xl shadow-indigo-600/40 hover:scale-105 active:scale-95 transition">
+    <span>✨ Ask AI Coach</span>
+  </button>
+
+  <!-- Coach Modal -->
+  <div id="coachModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-[#0f172a] border border-slate-800 rounded-3xl w-full max-w-2xl h-[580px] flex flex-col shadow-2xl overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-bold">🤖</div>
+          <div>
+            <h3 class="font-bold text-white text-base">CreatorPilot AI Coach</h3>
+            <p class="text-xs text-slate-400">Siri for Content Creators (Voice Enabled)</p>
+          </div>
+        </div>
+        <button onclick="closeModal('coachModal')" class="p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white">✕</button>
+      </div>
+
+      <div id="chatHistory" class="flex-1 overflow-y-auto p-6 space-y-4 text-sm">
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-indigo-400 shrink-0">🤖</div>
+          <div class="bg-slate-800/80 text-slate-200 border border-slate-700/60 rounded-2xl rounded-tl-none px-4 py-3 max-w-[85%] leading-relaxed">
+            Hey Alex! I have been watching your channel metrics. You haven't posted in 6 days and your audience engagement drops after day 7. Ask me what to post this week or why your last video had a retention drop!
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick prompts -->
+      <div class="px-6 py-2 flex items-center gap-2 overflow-x-auto border-t border-slate-800 bg-slate-900/30">
+        <button onclick="sendChatMessage('Why did my last video flop?')" class="text-xs px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 whitespace-nowrap">Why did my last video flop?</button>
+        <button onclick="sendChatMessage('What should I post this week?')" class="text-xs px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 whitespace-nowrap">What should I post this week?</button>
+        <button onclick="sendChatMessage('How close am I to monetization?')" class="text-xs px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 whitespace-nowrap">Monetization check</button>
+      </div>
+
+      <div class="p-4 bg-slate-900/80 border-t border-slate-800 flex items-center gap-2">
+        <button id="micBtn" onclick="toggleVoice()" class="p-2.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white" title="Tap to talk">🎤</button>
+        <input id="chatInput" type="text" placeholder="Ask your coach anything..." class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-indigo-500" onkeydown="if(event.key==='Enter') sendChatMessage()">
+        <button onclick="sendChatMessage()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Title Scorer Modal -->
+  <div id="titleScorerModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-[#0f172a] border border-slate-800 rounded-3xl w-full max-w-xl p-6 shadow-2xl relative">
+      <button onclick="closeModal('titleScorerModal')" class="absolute top-5 right-5 p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white">✕</button>
+      <h3 class="text-lg font-bold text-white mb-1">Title & Thumbnail Click-Potential Scorer</h3>
+      <p class="text-xs text-slate-400 mb-4">Evaluates length, curiosity hooks, and CTR impact.</p>
+
+      <div class="flex gap-2">
+        <input id="titleInput" type="text" value="Why You Should Stop Using Express.js in 2026" class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500">
+        <button onclick="runTitleScorer()" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-semibold text-sm text-white">Analyze</button>
+      </div>
+
+      <div id="titleResults" class="mt-5 pt-4 border-t border-slate-800 space-y-3">
+        <div class="flex items-center justify-between bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+          <div><div class="text-xs text-slate-400">Predicted CTR Score</div><div class="text-2xl font-black text-white">92 / 100</div></div>
+          <div class="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center font-bold text-white text-lg">A+</div>
+        </div>
+        <div class="text-xs text-emerald-400">✓ Strong psychological urgency ('Stop Using', 'In 2026')</div>
+        <div class="text-xs text-emerald-400">✓ Optimal length (46 characters) for mobile feeds</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weekly Plan Modal -->
+  <div id="weeklyPlanModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-[#0f172a] border border-slate-800 rounded-3xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden relative">
+      <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
+        <h3 class="font-bold text-white text-base">📅 Weekly Creator Growth Plan</h3>
+        <button onclick="closeModal('weeklyPlanModal')" class="p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white">✕</button>
+      </div>
+      <div class="p-6 space-y-3 overflow-y-auto text-xs">
+        <div class="p-3 bg-slate-800/40 border border-slate-700/60 rounded-xl"><strong class="text-white">Monday (Scripting):</strong> Outline 'FastAPI JWT Auth Masterclass'. Keep hook under 8s.</div>
+        <div class="p-3 bg-slate-800/40 border border-slate-700/60 rounded-xl"><strong class="text-white">Tuesday (Recording):</strong> Screen capture code demo and shoot 3 high-contrast thumbnails.</div>
+        <div class="p-3 bg-slate-800/40 border border-slate-700/60 rounded-xl"><strong class="text-white">Wednesday (Editing):</strong> Cut dead air and add zoom cuts on code editor.</div>
+        <div class="p-3 bg-slate-800/40 border border-emerald-500/40 rounded-xl bg-emerald-500/5"><strong class="text-emerald-400">Thursday (Publishing - 7:00 PM EST):</strong> Upload video at peak audience window!</div>
+        <div class="p-3 bg-slate-800/40 border border-slate-700/60 rounded-xl"><strong class="text-white">Friday (Community):</strong> Post poll: 'What is your biggest blocker with authentication?'</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script for Interactivity & Chart.js -->
+  <script>
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    function testTitle(title) {
+      document.getElementById('titleInput').value = title;
+      openModal('titleScorerModal');
+    }
+
+    function runTitleScorer() {
+      const val = document.getElementById('titleInput').value;
+      const score = Math.min(96, Math.max(45, Math.floor(Math.random() * 20) + 78));
+      document.getElementById('titleResults').innerHTML = `
+        <div class="flex items-center justify-between bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+          <div><div class="text-xs text-slate-400">Predicted CTR Score</div><div class="text-2xl font-black text-white">${score} / 100</div></div>
+          <div class="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center font-bold text-white text-lg">A</div>
+        </div>
+        <div class="text-xs text-emerald-400">✓ Evaluated length: ${val.length} chars (Optimal for mobile)</div>
+        <div class="text-xs text-emerald-400">✓ Strong emotional curiosity hook detected</div>
+      `;
+    }
+
+    function speakText(txt) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(txt.replace(/[*#_`]/g, ''));
+        utter.rate = 1.05;
+        window.speechSynthesis.speak(utter);
+      }
+    }
+
+    function sendChatMessage(text) {
+      const input = document.getElementById('chatInput');
+      const msg = text || input.value.trim();
+      if (!msg) return;
+
+      const chat = document.getElementById('chatHistory');
+      chat.innerHTML += `
+        <div class="flex items-start gap-3 flex-row-reverse">
+          <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white shrink-0">👤</div>
+          <div class="bg-indigo-600 text-white rounded-2xl rounded-tr-none px-4 py-2.5 max-w-[85%]">${msg}</div>
+        </div>
+      `;
+      if (!text) input.value = '';
+
+      let reply = "I analyzed your channel stats. Keep your upload consistency steady this week!";
+      if (msg.includes("flop") || msg.includes("last video")) {
+        reply = "Your last video had a 42% retention drop in the first 30 seconds because your intro was 45 seconds long. In your next video, show the working demo within the first 8 seconds!";
+      } else if (msg.includes("post this week") || msg.includes("idea")) {
+        reply = "You should post a dedicated video on 'FastAPI JWT & Refresh Token Authentication'. Over 89 comments recently asked for it, and it has an 88% trend fit!";
+      } else if (msg.includes("monetiz")) {
+        reply = "You have 28,450 subscribers (exceeding the 1,000 threshold) and 3,480 of 4,000 watch hours (87%). You only need 520 more watch hours!";
+      }
+
+      setTimeout(() => {
+        chat.innerHTML += `
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-indigo-400 shrink-0">🤖</div>
+            <div class="bg-slate-800/80 text-slate-200 border border-slate-700/60 rounded-2xl rounded-tl-none px-4 py-3 max-w-[85%] leading-relaxed">${reply}</div>
+          </div>
+        `;
+        chat.scrollTop = chat.scrollHeight;
+        speakText(reply);
+      }, 400);
+    }
+
+    let activeRecognition = null;
+
+    function toggleVoice() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert("Speech Recognition is not supported in this browser. Please open in Google Chrome or Microsoft Edge.");
+        return;
+      }
+
+      // Check for file:// protocol restriction
+      if (window.location.protocol === 'file:') {
+        console.warn("Notice: Modern Chrome/Edge restrict microphone access on local file:// URLs.");
+      }
+
+      const micBtn = document.getElementById('micBtn');
+
+      if (activeRecognition) {
+        try { activeRecognition.stop(); } catch(e){}
+        activeRecognition = null;
+        micBtn.classList.remove('bg-rose-600', 'animate-pulse');
+        return;
+      }
+
+      try {
+        const recognition = new SpeechRecognition();
+        activeRecognition = recognition;
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        recognition.onstart = () => {
+          micBtn.classList.add('bg-rose-600', 'animate-pulse');
+          document.getElementById('chatInput').placeholder = "Listening... Speak now!";
+        };
+
+        recognition.onend = () => {
+          micBtn.classList.remove('bg-rose-600', 'animate-pulse');
+          document.getElementById('chatInput').placeholder = "Ask your coach anything...";
+          activeRecognition = null;
+        };
+
+        recognition.onerror = (e) => {
+          console.error("Speech Recognition Error:", e.error);
+          micBtn.classList.remove('bg-rose-600', 'animate-pulse');
+          activeRecognition = null;
+          document.getElementById('chatInput').placeholder = "Ask your coach anything...";
+
+          if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+            alert(
+              "⚠️ Microphone Access Notice:\n\n" +
+              "Modern browsers block the microphone on local 'file://' links for security.\n\n" +
+              "To use your live microphone, either:\n" +
+              "1. Run 'run_local_preview.bat' (opens via http://localhost:3000)\n" +
+              "2. Or click any of the 3 quick question buttons ('Why did my last video flop?') to test immediately!"
+            );
+          } else if (e.error === 'no-speech') {
+            alert("No voice detected. Please try tapping the microphone and speaking clearly.");
+          }
+        };
+
+        recognition.onresult = (e) => {
+          const transcript = e.results[0][0].transcript;
+          document.getElementById('chatInput').value = transcript;
+          sendChatMessage(transcript);
+        };
+
+        recognition.start();
+      } catch (err) {
+        console.error("Failed to start recognition:", err);
+        alert("Could not start speech recognition. Try running on localhost:3000.");
+      }
+    }
+
+    // Initialize Chart.js Growth Forecast
+    window.onload = function() {
+      const ctx = document.getElementById('growthChart').getContext('2d');
+      const labels = ['Day 1', 'Day 5', 'Day 10', 'Day 15', 'Day 20', 'Day 25', 'Day 30'];
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Upper 95% Confidence',
+              data: [28600, 29400, 30300, 31300, 32300, 33400, 34500],
+              borderColor: '#10b981',
+              borderDash: [5, 5],
+              fill: false,
+              tension: 0.3
+            },
+            {
+              label: 'Predicted Subscribers (Prophet)',
+              data: [28450, 29150, 29900, 30750, 31600, 32200, 32840],
+              borderColor: '#6366f1',
+              backgroundColor: 'rgba(99, 102, 241, 0.15)',
+              fill: true,
+              borderWidth: 3,
+              tension: 0.3
+            },
+            {
+              label: 'Lower 95% Confidence',
+              data: [28300, 28900, 29500, 30200, 30900, 31400, 32000],
+              borderColor: '#64748b',
+              borderDash: [5, 5],
+              fill: false,
+              tension: 0.3
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: '#94a3b8', font: { size: 11 } } }
+          },
+          scales: {
+            x: { grid: { color: '#1e293b' }, ticks: { color: '#64748b' } },
+            y: { grid: { color: '#1e293b' }, ticks: { color: '#64748b' } }
+          }
+        }
+      });
+    };
+  </script>
+</body>
+</html>
