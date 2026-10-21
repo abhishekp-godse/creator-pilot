@@ -214,22 +214,10 @@ $$\hat{y}(t) = \beta_0 + \beta_1 t + \epsilon_t, \quad \text{CI}_{95\%} = \hat{y
 | `GET` | `/api/growth/monetization-sprint`| `GrowthController`| 14-day watch hour sprint plan toward YPP ad approval. |
 | `POST` | `/api/coach/chat` | `CoachController` | Siri-like strategic manager chat with memory and voice synthesis text. |
 
----
-
-## 🎓 8. Tips for Final-Year Project Viva & Evaluators
-
-1. **Highlight the Core Innovation First**:
-   * Evaluators frequently see dashboards. Emphasize that **CreatorPilot is proactive**: it analyzes the metrics *for* the creator and speaks advice.
-2. **Demonstrate the Hero Features**:
-   * **Voice Coach**: Ask aloud *"Why did my last video flop?"* and let evaluators hear the diagnostic audio answer.
-   * **Content Gap Finder**: Show how viewer comments are automatically converted into actionable video ideas.
-   * **Idea Vault**: Demonstrate ranking content concepts by effort vs. predicted reach.
-3. **Offline Reliability**:
-   * The project includes a pre-seeded dataset (`demo_data.py`), guaranteeing a seamless presentation even if campus Wi-Fi or API quotas are restricted.
 
 ---
 
-## ⚙️ 9. Configuration & Environment Variables
+## ⚙️ 8. Configuration & Environment Variables
 
 The backend supports configuration via `backend/.env`. A template is provided at `backend/.env.example`:
 
@@ -257,7 +245,7 @@ MONETIZATION_SUBS_TARGET=1000
 
 ---
 
-## 🛠️ 10. Troubleshooting & Common Fixes
+## 🛠️ 9. Troubleshooting & Common Fixes
 
 | Symptom / Error | Root Cause | Solution |
 | :--- | :--- | :--- |
@@ -267,18 +255,3 @@ MONETIZATION_SUBS_TARGET=1000
 | **FastAPI Backend missing modules** | Python packages not installed in virtual environment. | Run `cd backend; pip install -r requirements.txt`. |
 
 ---
-
-## 🎯 11. Sample Viva Questions & Answers
-
-* **Q1: How does CreatorPilot differ from YouTube Studio or VidIQ?**
-  * **Answer:** Existing platforms are *passive reporting dashboards* requiring creators to manually inspect hundreds of graphs. CreatorPilot is an *autonomous decision engine* that proactively calculates a composite Health Score, diagnoses retention drops in the first 30 seconds, mines comment gaps, and verbally advises the creator on what to film next.
-
-* **Q2: Why did you choose an MVC architectural pattern?**
-  * **Answer:** MVC enforces strict separation of concerns:
-    * **Model:** Pydantic domain schemas guarantee strong typing, validation, and serialization.
-    * **View:** Modern React 18 and Tailwind presentation components stay decoupled and testable.
-    * **Controller:** FastAPI controllers and custom React hooks (`useCreatorPilot`) isolate business logic, ML transformations, and API orchestration.
-
-* **Q3: How does the Title Scorer algorithm evaluate clickability?**
-  * **Answer:** It implements a multi-factor heuristic model combining character length optimization (45–65 characters), power-word dictionary lookups, emotional trigger density, question hooks, and capitalization/all-caps penalty metrics to assign a grade (A to D) and clickbait risk rating.
-
