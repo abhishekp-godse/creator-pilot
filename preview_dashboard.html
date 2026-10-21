@@ -195,6 +195,58 @@
       </div>
     </div>
 
+    <!-- NEW HERO FEATURE: Idea Vault & AI Ranking -->
+    <div class="bg-[#141d2f]/90 border border-slate-800 rounded-2xl p-6 my-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+        <div>
+          <h3 class="text-base font-bold text-white flex items-center gap-2">💡 Idea Vault & AI Concept Prioritizer</h3>
+          <p class="text-xs text-slate-400">Content backlog ranked by engagement potential, search velocity, and production effort</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <input id="vaultInput" type="text" placeholder="Type new concept..." class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500 w-52" />
+          <button onclick="addVaultIdea()" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-xs font-semibold text-white">+ Add Idea</button>
+        </div>
+      </div>
+
+      <div id="vaultList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+        <div class="p-4 rounded-xl bg-slate-800/40 border border-slate-700/60 flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center mb-1.5"><span class="text-[10px] uppercase font-bold text-slate-400">Content Gap</span><span class="text-amber-400 font-bold">★ 94 Score</span></div>
+            <h4 class="font-bold text-white text-xs leading-snug">FastAPI Authentication Masterclass: JWTs & Refresh Tokens</h4>
+            <div class="text-[11px] text-slate-400 mt-2">⏱️ Effort: <strong class="text-slate-300">Medium (3-5h)</strong></div>
+          </div>
+          <button onclick="testTitle('FastAPI Authentication Masterclass: JWTs & Refresh Tokens')" class="mt-3 text-left text-indigo-400 hover:underline text-[11px]">Evaluate in Scorer →</button>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-800/40 border border-slate-700/60 flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center mb-1.5"><span class="text-[10px] uppercase font-bold text-slate-400">Trend Fit</span><span class="text-amber-400 font-bold">★ 92 Score</span></div>
+            <h4 class="font-bold text-white text-xs leading-snug">Why React 19 Changes Fullstack Architecture Forever</h4>
+            <div class="text-[11px] text-slate-400 mt-2">⏱️ Effort: <strong class="text-slate-300">Low (1-2h)</strong></div>
+          </div>
+          <button onclick="testTitle('Why React 19 Changes Fullstack Architecture Forever')" class="mt-3 text-left text-indigo-400 hover:underline text-[11px]">Evaluate in Scorer →</button>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-800/40 border border-slate-700/60 flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center mb-1.5"><span class="text-[10px] uppercase font-bold text-slate-400">Trend Fit</span><span class="text-amber-400 font-bold">★ 89 Score</span></div>
+            <h4 class="font-bold text-white text-xs leading-snug">Local LLM Agents with Ollama, LangChain & Python</h4>
+            <div class="text-[11px] text-slate-400 mt-2">⏱️ Effort: <strong class="text-slate-300">High (Deep Dive)</strong></div>
+          </div>
+          <button onclick="testTitle('Local LLM Agents with Ollama, LangChain & Python')" class="mt-3 text-left text-indigo-400 hover:underline text-[11px]">Evaluate in Scorer →</button>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-800/40 border border-slate-700/60 flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center mb-1.5"><span class="text-[10px] uppercase font-bold text-slate-400">Audience Inquiry</span><span class="text-amber-400 font-bold">★ 85 Score</span></div>
+            <h4 class="font-bold text-white text-xs leading-snug">Fixing CORS Policy in React and FastAPI in 5 Minutes</h4>
+            <div class="text-[11px] text-slate-400 mt-2">⏱️ Effort: <strong class="text-slate-300">Low (1-2h)</strong></div>
+          </div>
+          <button onclick="testTitle('Fixing CORS Policy in React and FastAPI in 5 Minutes')" class="mt-3 text-left text-indigo-400 hover:underline text-[11px]">Evaluate in Scorer →</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Trends & Content Gaps -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 my-6">
       
@@ -284,6 +336,64 @@
 
     </div>
 
+    <!-- NEW HERO FEATURE: Peer Creator Collab Matcher -->
+    <div class="bg-[#141d2f]/90 border border-slate-800 rounded-2xl p-6 my-6">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h3 class="text-base font-bold text-white flex items-center gap-2">🤝 Peer Creator Collaboration Matcher</h3>
+          <p class="text-xs text-slate-400">Targeting channels with high niche synergy (15k–45k subscribers) for cross-promotional spikes</p>
+        </div>
+        <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">3 Synergy Matches</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+        <div class="p-4 rounded-xl bg-slate-800/40 border border-slate-700/60 flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <strong class="text-white text-sm">Pythonic Dev (@pythonicdev)</strong>
+              <span class="text-emerald-400 font-bold">92% Match</span>
+            </div>
+            <span class="text-slate-400">31.2k Subscribers • Backend & Architecture</span>
+            <div class="bg-slate-900/60 p-2.5 rounded-lg border border-slate-800 mt-2.5">
+              <span class="text-[10px] text-indigo-300 font-semibold uppercase block mb-1">Collab Video Concept</span>
+              <p class="text-slate-300 italic">"FastAPI vs Express.js 2026 Benchmark Showdown"</p>
+            </div>
+          </div>
+          <div class="mt-3 pt-2 border-t border-slate-700/40 text-emerald-400 font-semibold">+1,200 New Subscribers Potential</div>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-800/40 border border-slate-700/60 flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <strong class="text-white text-sm">DevSimplified AI (@devsimplifiedai)</strong>
+              <span class="text-emerald-400 font-bold">88% Match</span>
+            </div>
+            <span class="text-slate-400">26.8k Subscribers • AI Agents & LangChain</span>
+            <div class="bg-slate-900/60 p-2.5 rounded-lg border border-slate-800 mt-2.5">
+              <span class="text-[10px] text-indigo-300 font-semibold uppercase block mb-1">Collab Video Concept</span>
+              <p class="text-slate-300 italic">"Building an Autonomous Coding Agent with Local Ollama"</p>
+            </div>
+          </div>
+          <div class="mt-3 pt-2 border-t border-slate-700/40 text-emerald-400 font-semibold">+950 New Subscribers Potential</div>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-800/40 border border-slate-700/60 flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <strong class="text-white text-sm">Modern Frontend Lab (@modernfrontend)</strong>
+              <span class="text-emerald-400 font-bold">84% Match</span>
+            </div>
+            <span class="text-slate-400">35.4k Subscribers • Next.js 15 & React 19</span>
+            <div class="bg-slate-900/60 p-2.5 rounded-lg border border-slate-800 mt-2.5">
+              <span class="text-[10px] text-indigo-300 font-semibold uppercase block mb-1">Collab Video Concept</span>
+              <p class="text-slate-300 italic">"Fullstack Masterclass: Next.js 15 + Python FastAPI"</p>
+            </div>
+          </div>
+          <div class="mt-3 pt-2 border-t border-slate-700/40 text-emerald-400 font-semibold">+1,500 New Subscribers Potential</div>
+        </div>
+      </div>
+    </div>
+
   </main>
 
   <!-- Floating Ask Coach Button -->
@@ -371,6 +481,26 @@
 
   <!-- Script for Interactivity & Chart.js -->
   <script>
+    function addVaultIdea() {
+      const input = document.getElementById('vaultInput');
+      const text = input.value.trim();
+      if (!text) return;
+      const score = Math.min(97, Math.floor(Math.random() * 15) + 82);
+      const list = document.getElementById('vaultList');
+      const div = document.createElement('div');
+      div.className = "p-4 rounded-xl bg-slate-800/40 border border-slate-700/60 flex flex-col justify-between";
+      div.innerHTML = `
+        <div>
+          <div class="flex justify-between items-center mb-1.5"><span class="text-[10px] uppercase font-bold text-slate-400">Custom Idea</span><span class="text-amber-400 font-bold">★ ${score} Score</span></div>
+          <h4 class="font-bold text-white text-xs leading-snug">${text}</h4>
+          <div class="text-[11px] text-slate-400 mt-2">⏱️ Effort: <strong class="text-slate-300">Medium (3-5h)</strong></div>
+        </div>
+        <button onclick="testTitle('${text.replace(/'/g, "\\'")}')" class="mt-3 text-left text-indigo-400 hover:underline text-[11px]">Evaluate in Scorer →</button>
+      `;
+      list.prepend(div);
+      input.value = '';
+    }
+
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
@@ -488,7 +618,7 @@
               "⚠️ Microphone Access Notice:\n\n" +
               "Modern browsers block the microphone on local 'file://' links for security.\n\n" +
               "To use your live microphone, either:\n" +
-              "1. Run 'run_local_preview.bat' (opens via http://localhost:3000)\n" +
+              "1. Run 'START_LOCALHOST.bat' (opens via http://localhost:8080)\n" +
               "2. Or click any of the 3 quick question buttons ('Why did my last video flop?') to test immediately!"
             );
           } else if (e.error === 'no-speech') {
@@ -505,7 +635,7 @@
         recognition.start();
       } catch (err) {
         console.error("Failed to start recognition:", err);
-        alert("Could not start speech recognition. Try running on localhost:3000.");
+        alert("Could not start speech recognition. Try running on localhost:8080.");
       }
     }
 
