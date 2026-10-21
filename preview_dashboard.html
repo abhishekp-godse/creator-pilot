@@ -37,21 +37,67 @@
         </div>
       </div>
 
-      <div class="flex items-center gap-3">
-        <button onclick="openModal('titleScorerModal')" class="px-3.5 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 text-sm font-medium border border-slate-700/60 transition">
+      <div class="flex items-center gap-2.5">
+        <button onclick="openModal('titleScorerModal')" class="hidden sm:inline-block px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 text-xs font-medium border border-slate-700/60 transition">
           📊 Title Scorer
         </button>
-        <button onclick="openModal('weeklyPlanModal')" class="px-3.5 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 text-sm font-medium border border-slate-700/60 transition">
+        <button onclick="openModal('weeklyPlanModal')" class="hidden sm:inline-block px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 text-xs font-medium border border-slate-700/60 transition">
           📅 Weekly Plan
         </button>
-        <button onclick="openModal('coachModal')" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white text-sm font-semibold shadow-md shadow-indigo-600/30 transition">
-          🎤 Talk to AI Coach
+        <button onclick="openModal('coachModal')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white text-xs font-semibold shadow-md shadow-indigo-600/30 transition">
+          🎤 Talk to Coach
         </button>
+
+        <!-- Auth & Creator Profile Area -->
+        <div id="authHeaderArea" class="flex items-center gap-2 pl-2 sm:pl-3 border-l border-slate-800">
+          <!-- Logged In State (Active by Default) -->
+          <div id="navLoggedInState" class="flex items-center gap-2">
+            <button onclick="openModal('authPortalModal')" class="flex items-center gap-2 px-2.5 py-1 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/60 text-left transition group" title="Switch Creator Account / View Portal">
+              <img id="navAvatar" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150" class="w-7 h-7 rounded-lg object-cover border border-indigo-500/50" />
+              <div class="hidden md:block leading-none">
+                <div id="navChannelName" class="text-xs font-bold text-white group-hover:text-indigo-300">CodeCraft Studio</div>
+                <div id="navChannelHandle" class="text-[10px] text-slate-400">@codecraftstudio</div>
+              </div>
+              <span class="text-[10px] text-slate-400 group-hover:text-white">▼</span>
+            </button>
+            <button onclick="handleLogout()" title="Log out of CreatorPilot" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-semibold transition">
+              <span>🚪</span> <span class="hidden sm:inline">Log Out</span>
+            </button>
+          </div>
+
+          <!-- Logged Out State (Initially Hidden) -->
+          <div id="navLoggedOutState" class="hidden">
+            <button onclick="openModal('authPortalModal')" class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-emerald-500 hover:from-indigo-500 hover:to-emerald-400 text-white text-xs font-bold shadow-md shadow-indigo-600/30 transition">
+              <span>🔑</span> <span>Sign In / Connect</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </header>
 
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6">
+
+    <!-- Logged Out Alert Banner (Shown only when logged out) -->
+    <div id="loggedOutBanner" class="hidden mb-5 p-4 rounded-2xl bg-gradient-to-r from-slate-900/95 via-indigo-950/50 to-slate-900/95 border border-indigo-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xl animate-fade-in">
+      <div class="flex items-center gap-3.5">
+        <div class="w-10 h-10 rounded-xl bg-indigo-600/20 border border-indigo-500/40 text-indigo-400 flex items-center justify-center text-xl shrink-0">
+          🔒
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h4 class="text-sm font-bold text-white">Viewing Studio in Guest Mode (Logged Out)</h4>
+            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20">Session Inactive</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-0.5">Sign in or switch creator profiles to unlock your personalized AI Coach recommendations and save Idea Vault concepts.</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        <button onclick="openModal('authPortalModal')" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md shadow-indigo-600/30 transition">
+          🔑 Open Login Portal
+        </button>
+      </div>
+    </div>
 
     <!-- Proactive Notifications Banner -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 my-4">
@@ -92,22 +138,30 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 my-6">
       
       <!-- Profile Card -->
-      <div class="bg-[#141d2f]/90 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between">
+      <div class="bg-[#141d2f]/90 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between relative">
+        <div class="flex items-center justify-between mb-3">
+          <span id="profileStatusBadge" class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            ● Studio Connected
+          </span>
+          <button onclick="openModal('authPortalModal')" class="text-[11px] text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1 transition">
+            Switch Creator ⚙️
+          </button>
+        </div>
         <div class="flex items-center gap-4">
-          <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150" class="w-16 h-16 rounded-2xl border-2 border-indigo-500/40 object-cover shadow-lg" />
+          <img id="profileCardAvatar" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150" class="w-16 h-16 rounded-2xl border-2 border-indigo-500/40 object-cover shadow-lg" />
           <div>
-            <h2 class="text-xl font-bold text-white flex items-center gap-1.5">CodeCraft Studio <span class="text-emerald-400 text-sm">✓</span></h2>
-            <p class="text-sm text-slate-400">@codecraftstudio</p>
-            <span class="inline-block mt-1 text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
+            <h2 id="profileCardName" class="text-xl font-bold text-white flex items-center gap-1.5">CodeCraft Studio <span class="text-emerald-400 text-sm">✓</span></h2>
+            <p id="profileCardHandle" class="text-sm text-slate-400">@codecraftstudio</p>
+            <span id="profileCardNiche" class="inline-block mt-1 text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
               Web Dev & AI Engineering
             </span>
           </div>
         </div>
 
         <div class="grid grid-cols-3 gap-2 mt-6 pt-4 border-t border-slate-800 text-center">
-          <div><div class="text-xs text-slate-400">Subs</div><div class="text-lg font-bold text-white">28,450</div></div>
-          <div class="border-x border-slate-800"><div class="text-xs text-slate-400">Views</div><div class="text-lg font-bold text-white">1.84M</div></div>
-          <div><div class="text-xs text-slate-400">Videos</div><div class="text-lg font-bold text-white">86</div></div>
+          <div><div class="text-xs text-slate-400">Subs</div><div id="profileCardSubs" class="text-lg font-bold text-white">28,450</div></div>
+          <div class="border-x border-slate-800"><div class="text-xs text-slate-400">Views</div><div id="profileCardViews" class="text-lg font-bold text-white">1.84M</div></div>
+          <div><div class="text-xs text-slate-400">Videos</div><div id="profileCardVideos" class="text-lg font-bold text-white">86</div></div>
         </div>
       </div>
 
@@ -118,21 +172,21 @@
             <h3 class="text-base font-bold text-white">Growth Health Score</h3>
             <p class="text-xs text-slate-400">Weighted cross-metric algorithm</p>
           </div>
-          <div><span class="text-3xl font-black text-emerald-400">82</span><span class="text-xs text-slate-400"> / 100</span></div>
+          <div><span id="profileHealthScore" class="text-3xl font-black text-emerald-400">82</span><span class="text-xs text-slate-400"> / 100</span></div>
         </div>
 
         <div class="space-y-3 mt-4">
           <div>
-            <div class="flex justify-between text-xs mb-1"><span class="text-slate-300">Consistency (40%)</span><span class="text-emerald-400 font-bold">82%</span></div>
-            <div class="w-full h-2 rounded-full bg-slate-800"><div class="h-full bg-emerald-500 rounded-full" style="width: 82%"></div></div>
+            <div class="flex justify-between text-xs mb-1"><span class="text-slate-300">Consistency (40%)</span><span id="profileConsistencyVal" class="text-emerald-400 font-bold">82%</span></div>
+            <div class="w-full h-2 rounded-full bg-slate-800"><div id="profileConsistencyBar" class="h-full bg-emerald-500 rounded-full" style="width: 82%"></div></div>
           </div>
           <div>
-            <div class="flex justify-between text-xs mb-1"><span class="text-slate-300">Engagement (35%)</span><span class="text-indigo-400 font-bold">78%</span></div>
-            <div class="w-full h-2 rounded-full bg-slate-800"><div class="h-full bg-indigo-500 rounded-full" style="width: 78%"></div></div>
+            <div class="flex justify-between text-xs mb-1"><span class="text-slate-300">Engagement (35%)</span><span id="profileEngagementVal" class="text-indigo-400 font-bold">78%</span></div>
+            <div class="w-full h-2 rounded-full bg-slate-800"><div id="profileEngagementBar" class="h-full bg-indigo-500 rounded-full" style="width: 78%"></div></div>
           </div>
           <div>
-            <div class="flex justify-between text-xs mb-1"><span class="text-slate-300">Trend Alignment (25%)</span><span class="text-violet-400 font-bold">88%</span></div>
-            <div class="w-full h-2 rounded-full bg-slate-800"><div class="h-full bg-violet-500 rounded-full" style="width: 88%"></div></div>
+            <div class="flex justify-between text-xs mb-1"><span class="text-slate-300">Trend Alignment (25%)</span><span id="profileTrendVal" class="text-violet-400 font-bold">88%</span></div>
+            <div class="w-full h-2 rounded-full bg-slate-800"><div id="profileTrendBar" class="h-full bg-violet-500 rounded-full" style="width: 88%"></div></div>
           </div>
         </div>
       </div>
@@ -142,7 +196,7 @@
         <div>
           <div class="flex items-center justify-between">
             <h3 class="text-base font-bold text-white">Monetization Readiness</h3>
-            <span class="text-xs font-semibold px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400">87% Ready</span>
+            <span id="profileMonetizationBadge" class="text-xs font-semibold px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400">87% Ready</span>
           </div>
           <p class="text-xs text-slate-400">Progress to YouTube Partner Program</p>
         </div>
@@ -151,23 +205,23 @@
           <div>
             <div class="flex justify-between text-xs mb-1">
               <span class="text-slate-300">Subscribers Goal</span>
-              <span class="font-bold text-white">28,450 / 1,000 <span class="text-emerald-400">✓ Done</span></span>
+              <span id="profileSubsGoal" class="font-bold text-white">28,450 / 1,000 <span class="text-emerald-400">✓ Done</span></span>
             </div>
-            <div class="w-full h-2 rounded-full bg-slate-800"><div class="h-full bg-emerald-400 rounded-full" style="width: 100%"></div></div>
+            <div class="w-full h-2 rounded-full bg-slate-800"><div id="profileSubsBar" class="h-full bg-emerald-400 rounded-full" style="width: 100%"></div></div>
           </div>
 
           <div>
             <div class="flex justify-between text-xs mb-1">
               <span class="text-slate-300">Watch Hours Goal</span>
-              <span class="font-bold text-indigo-300">3,480 / 4,000 hrs (87%)</span>
+              <span id="profileWatchHoursVal" class="font-bold text-indigo-300">3,480 / 4,000 hrs (87%)</span>
             </div>
-            <div class="w-full h-2 rounded-full bg-slate-800"><div class="h-full bg-gradient-to-r from-indigo-500 to-emerald-400 rounded-full" style="width: 87%"></div></div>
+            <div class="w-full h-2 rounded-full bg-slate-800"><div id="profileWatchHoursBar" class="h-full bg-gradient-to-r from-indigo-500 to-emerald-400 rounded-full" style="width: 87%"></div></div>
           </div>
         </div>
 
         <div class="bg-slate-800/50 rounded-xl p-2.5 text-[11px] text-slate-300 flex items-center justify-between">
-          <span>🔥 Streak: <strong class="text-white">4 weeks</strong></span>
-          <span>Only <strong class="text-emerald-400">520 watch hours</strong> to partner approval!</span>
+          <span>🔥 Streak: <strong id="profileStreakVal" class="text-white">4 weeks</strong></span>
+          <span id="profileMilestoneText">Only <strong class="text-emerald-400">520 watch hours</strong> to partner approval!</span>
         </div>
       </div>
     </div>
@@ -479,8 +533,388 @@
     </div>
   </div>
 
+  <!-- Auth & Creator Login Portal Modal -->
+  <div id="authPortalModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="bg-[#0f172a] border border-slate-800 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden relative">
+      <!-- Close Button -->
+      <button onclick="closeModal('authPortalModal')" class="absolute top-5 right-5 p-2 rounded-xl bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 transition z-10">✕</button>
+
+      <!-- Modal Header -->
+      <div class="p-6 border-b border-slate-800 bg-gradient-to-b from-indigo-950/40 via-slate-900/40 to-transparent">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-emerald-400 flex items-center justify-center font-bold text-2xl shadow-lg shadow-indigo-500/20">
+            🔐
+          </div>
+          <div>
+            <h3 class="font-extrabold text-white text-lg tracking-tight">CreatorPilot Auth Portal</h3>
+            <p class="text-xs text-slate-400">Autonomous Creator Growth & Decision Engine</p>
+          </div>
+        </div>
+
+        <!-- Active Session Status Box -->
+        <div id="portalSessionBox" class="mt-4 p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/60 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <img id="portalCurrentAvatar" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150" class="w-9 h-9 rounded-xl object-cover border border-emerald-400/50" />
+            <div>
+              <div class="text-xs font-bold text-white flex items-center gap-1.5">
+                <span id="portalCurrentName">CodeCraft Studio</span>
+                <span id="portalCurrentBadge" class="text-[9px] px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-300 font-bold">Active</span>
+              </div>
+              <div id="portalCurrentHandle" class="text-[11px] text-slate-400">@codecraftstudio • 28.4K Subs</div>
+            </div>
+          </div>
+          <button id="portalLogoutBtn" onclick="handleLogout()" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/20 transition flex items-center gap-1">
+            <span>🚪</span> Log Out
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="flex border-b border-slate-800 bg-slate-900/60 px-6 pt-3 gap-6 text-xs font-semibold">
+        <button id="tabBtnProfiles" onclick="switchAuthTab('profiles')" class="pb-3 border-b-2 border-indigo-500 text-indigo-400 font-bold transition">
+          ⚡ 1-Click Creator Profiles
+        </button>
+        <button id="tabBtnManual" onclick="switchAuthTab('manual')" class="pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition">
+          🔑 Sign In / Sign Up
+        </button>
+        <button id="tabBtnGoogle" onclick="switchAuthTab('google')" class="pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition">
+          🔴 Google YouTube Sync
+        </button>
+      </div>
+
+      <div class="p-6">
+        <!-- TAB 1: 1-Click Demo Creator Profiles -->
+        <div id="authTabProfiles" class="space-y-3">
+          <p class="text-xs text-slate-400 mb-2">Switch instantly between pre-configured creator profiles for review and evaluation:</p>
+
+          <!-- Profile 1: Tech/AI -->
+          <div onclick="selectCreatorProfile('codecraft')" class="p-3.5 rounded-2xl bg-slate-800/40 hover:bg-indigo-950/40 border border-slate-700/60 hover:border-indigo-500/50 cursor-pointer flex items-center justify-between transition group">
+            <div class="flex items-center gap-3">
+              <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150" class="w-10 h-10 rounded-xl object-cover border border-indigo-500/40" />
+              <div>
+                <div class="text-sm font-bold text-white group-hover:text-indigo-300 flex items-center gap-1.5">
+                  CodeCraft Studio <span class="text-xs text-indigo-400 font-normal">(Tech & AI)</span>
+                </div>
+                <div class="text-xs text-slate-400">@codecraftstudio • 28,450 Subs • 3,480h Watch</div>
+              </div>
+            </div>
+            <span class="text-xs font-semibold px-3 py-1 rounded-lg bg-indigo-600/20 group-hover:bg-indigo-600 text-indigo-300 group-hover:text-white border border-indigo-500/30 transition">
+              Sign In →
+            </span>
+          </div>
+
+          <!-- Profile 2: Gaming -->
+          <div onclick="selectCreatorProfile('pixelquest')" class="p-3.5 rounded-2xl bg-slate-800/40 hover:bg-indigo-950/40 border border-slate-700/60 hover:border-indigo-500/50 cursor-pointer flex items-center justify-between transition group">
+            <div class="flex items-center gap-3">
+              <img src="https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=150" class="w-10 h-10 rounded-xl object-cover border border-violet-500/40" />
+              <div>
+                <div class="text-sm font-bold text-white group-hover:text-indigo-300 flex items-center gap-1.5">
+                  PixelQuest Gaming <span class="text-xs text-violet-400 font-normal">(Gaming)</span>
+                </div>
+                <div class="text-xs text-slate-400">@pixelquest_live • 42,100 Subs • Monetized ✓</div>
+              </div>
+            </div>
+            <span class="text-xs font-semibold px-3 py-1 rounded-lg bg-slate-700/50 group-hover:bg-indigo-600 text-slate-300 group-hover:text-white border border-slate-600/30 transition">
+              Sign In →
+            </span>
+          </div>
+
+          <!-- Profile 3: Lifestyle/Fitness -->
+          <div onclick="selectCreatorProfile('nutrivibe')" class="p-3.5 rounded-2xl bg-slate-800/40 hover:bg-indigo-950/40 border border-slate-700/60 hover:border-indigo-500/50 cursor-pointer flex items-center justify-between transition group">
+            <div class="flex items-center gap-3">
+              <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150" class="w-10 h-10 rounded-xl object-cover border border-emerald-500/40" />
+              <div>
+                <div class="text-sm font-bold text-white group-hover:text-indigo-300 flex items-center gap-1.5">
+                  NutriVibe Healthy <span class="text-xs text-emerald-400 font-normal">(Lifestyle)</span>
+                </div>
+                <div class="text-xs text-slate-400">@nutrivibe_fit • 15,800 Subs • 2,150h Watch</div>
+              </div>
+            </div>
+            <span class="text-xs font-semibold px-3 py-1 rounded-lg bg-slate-700/50 group-hover:bg-indigo-600 text-slate-300 group-hover:text-white border border-slate-600/30 transition">
+              Sign In →
+            </span>
+          </div>
+        </div>
+
+        <!-- TAB 2: Manual Sign In Form -->
+        <div id="authTabManual" class="space-y-4 hidden">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Channel Handle or Email</label>
+            <input id="loginIdentifier" type="text" placeholder="@yourchannel or creator@studio.com" value="@codecraftstudio" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500" />
+          </div>
+          <div>
+            <div class="flex justify-between items-center mb-1.5">
+              <label class="block text-xs font-semibold text-slate-300">Password / Secret Key</label>
+              <span class="text-[10px] text-slate-500">(Any demo password accepted)</span>
+            </div>
+            <input id="loginPassword" type="password" placeholder="••••••••" value="demo12345" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500" />
+          </div>
+          <div class="flex items-center justify-between text-xs text-slate-400">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" checked class="rounded border-slate-700 bg-slate-800 text-indigo-600" />
+              <span>Remember session</span>
+            </label>
+            <span class="text-slate-500 text-[11px]">Instant Token Authorization</span>
+          </div>
+          <button onclick="handleManualLogin()" class="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold text-sm shadow-lg shadow-indigo-600/30 transition">
+            Sign In to Creator Dashboard
+          </button>
+        </div>
+
+        <!-- TAB 3: Google YouTube OAuth Simulation -->
+        <div id="authTabGoogle" class="space-y-4 text-center hidden py-4">
+          <div class="w-14 h-14 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center text-3xl mx-auto">
+            ▶️
+          </div>
+          <div>
+            <h4 class="text-sm font-bold text-white">Connect YouTube Studio via Google OAuth</h4>
+            <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">Syncs real-time video analytics, comment questions, and 30-day retention curve via YouTube Data API v3.</p>
+          </div>
+          <button onclick="handleGoogleSignIn()" class="inline-flex items-center gap-3 px-6 py-3 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-bold text-sm shadow-lg transition">
+            <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
+            <span>Continue with Google</span>
+          </button>
+          <div class="text-[10px] text-slate-500">Live OAuth simulation with pre-seeded creator telemetry</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="fixed top-20 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
   <!-- Script for Interactivity & Chart.js -->
   <script>
+    // Comprehensive Multi-Creator Dataset for Live Demos
+    const CREATOR_PROFILES = {
+      codecraft: {
+        key: 'codecraft',
+        name: 'CodeCraft Studio',
+        handle: '@codecraftstudio',
+        niche: 'Web Dev & AI Engineering',
+        avatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150',
+        subs: '28,450',
+        subsNum: 28450,
+        views: '1.84M',
+        videos: '86',
+        healthScore: 82,
+        consistency: 82,
+        engagement: 78,
+        trend: 88,
+        watchHours: 3480,
+        watchHoursTarget: 4000,
+        watchHoursPct: 87,
+        monetizationStatus: '87% Ready',
+        milestoneText: 'Only <strong class="text-emerald-400">520 watch hours</strong> to partner approval!',
+        streak: '4 weeks',
+        chartData: [28450, 29150, 29900, 30750, 31600, 32200, 32840],
+        chartUpper: [28600, 29400, 30300, 31300, 32300, 33400, 34500],
+        chartLower: [28300, 28900, 29500, 30200, 30900, 31400, 32000]
+      },
+      pixelquest: {
+        key: 'pixelquest',
+        name: 'PixelQuest Gaming',
+        handle: '@pixelquest_live',
+        niche: 'Gaming & Live Speedruns',
+        avatar: 'https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=150',
+        subs: '42,100',
+        subsNum: 42100,
+        views: '3.92M',
+        videos: '142',
+        healthScore: 92,
+        consistency: 94,
+        engagement: 89,
+        trend: 93,
+        watchHours: 4890,
+        watchHoursTarget: 4000,
+        watchHoursPct: 100,
+        monetizationStatus: 'Monetized ✓',
+        milestoneText: 'Partner Program Active! <strong class="text-emerald-400">Eligible for Super Chat</strong>',
+        streak: '7 weeks',
+        chartData: [42100, 42900, 43800, 44800, 45900, 47100, 48400],
+        chartUpper: [42300, 43200, 44200, 45300, 46500, 47900, 49500],
+        chartLower: [41900, 42600, 43400, 44300, 45300, 46300, 47300]
+      },
+      nutrivibe: {
+        key: 'nutrivibe',
+        name: 'NutriVibe Healthy',
+        handle: '@nutrivibe_fit',
+        niche: 'Nutrition, Meal Prep & Wellness',
+        avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150',
+        subs: '15,800',
+        subsNum: 15800,
+        views: '890K',
+        videos: '54',
+        healthScore: 79,
+        consistency: 74,
+        engagement: 84,
+        trend: 79,
+        watchHours: 2150,
+        watchHoursTarget: 4000,
+        watchHoursPct: 54,
+        monetizationStatus: '54% Ready',
+        milestoneText: 'Requires <strong class="text-amber-400">1,850 more watch hours</strong> for monetization',
+        streak: '2 weeks',
+        chartData: [15800, 16200, 16650, 17150, 17700, 18300, 18950],
+        chartUpper: [15950, 16400, 16900, 17500, 18150, 18850, 19600],
+        chartLower: [15650, 16000, 16400, 16800, 17250, 17750, 18300]
+      }
+    };
+
+    let activeCreator = CREATOR_PROFILES.codecraft;
+    let isLoggedIn = true;
+    let growthChartInstance = null;
+
+    // Toast Notification System
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      const icon = type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
+      const border = type === 'success' ? 'border-emerald-500/40 bg-slate-900/95 text-emerald-200' : 'border-indigo-500/40 bg-slate-900/95 text-indigo-200';
+      toast.className = `flex items-center gap-2.5 px-4 py-3 rounded-2xl border ${border} shadow-2xl backdrop-blur-md text-xs font-semibold animate-fade-in pointer-events-auto transition duration-300`;
+      toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-10px)';
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    // Auth Tab Switcher
+    function switchAuthTab(tab) {
+      document.getElementById('authTabProfiles').classList.toggle('hidden', tab !== 'profiles');
+      document.getElementById('authTabManual').classList.toggle('hidden', tab !== 'manual');
+      document.getElementById('authTabGoogle').classList.toggle('hidden', tab !== 'google');
+
+      const tabs = ['profiles', 'manual', 'google'];
+      tabs.forEach(t => {
+        const btn = document.getElementById('tabBtn' + t.charAt(0).toUpperCase() + t.slice(1));
+        if (t === tab) {
+          btn.className = "pb-3 border-b-2 border-indigo-500 text-indigo-400 font-bold transition";
+        } else {
+          btn.className = "pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition";
+        }
+      });
+    }
+
+    // Switch/Select Creator Profile
+    function selectCreatorProfile(key) {
+      const profile = CREATOR_PROFILES[key] || CREATOR_PROFILES.codecraft;
+      activeCreator = profile;
+      isLoggedIn = true;
+      localStorage.setItem('creatorpilot_auth', JSON.stringify({ isLoggedIn: true, profileKey: key }));
+      updateDashboard(profile);
+      updateGrowthChart(profile);
+      closeModal('authPortalModal');
+      showToast(`Welcome back, ${profile.name}! Channel synced.`, 'success');
+    }
+
+    // Manual Sign In Form
+    function handleManualLogin() {
+      const ident = document.getElementById('loginIdentifier').value.trim().toLowerCase();
+      let matchedKey = 'codecraft';
+      if (ident.includes('pixel') || ident.includes('game')) matchedKey = 'pixelquest';
+      else if (ident.includes('nutri') || ident.includes('fit') || ident.includes('life')) matchedKey = 'nutrivibe';
+      
+      selectCreatorProfile(matchedKey);
+    }
+
+    // Google YouTube OAuth Simulation
+    function handleGoogleSignIn() {
+      showToast("Redirecting to Google YouTube OAuth...", "info");
+      setTimeout(() => {
+        selectCreatorProfile('codecraft');
+        showToast("Connected via Google Account: codecraft@studio.com", "success");
+      }, 600);
+    }
+
+    // Log Out
+    function handleLogout() {
+      isLoggedIn = false;
+      localStorage.setItem('creatorpilot_auth', JSON.stringify({ isLoggedIn: false, profileKey: activeCreator.key }));
+      
+      // Update Navbar
+      document.getElementById('navLoggedInState').classList.add('hidden');
+      document.getElementById('navLoggedOutState').classList.remove('hidden');
+
+      // Update Banner
+      document.getElementById('loggedOutBanner').classList.remove('hidden');
+
+      // Update Profile Status Badge
+      document.getElementById('profileStatusBadge').className = "text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-700 text-slate-400 border border-slate-600";
+      document.getElementById('profileStatusBadge').textContent = "○ Guest Mode (Logged Out)";
+
+      // Update Portal Session Box
+      document.getElementById('portalCurrentBadge').className = "text-[9px] px-1.5 py-0.2 rounded-full bg-slate-700 text-slate-400 font-bold";
+      document.getElementById('portalCurrentBadge').textContent = "Logged Out";
+      document.getElementById('portalLogoutBtn').classList.add('hidden');
+
+      closeModal('authPortalModal');
+      showToast("Logged out successfully. Channel data preserved in offline telemetry.", "info");
+
+      // Re-open portal to let user sign back in smoothly
+      setTimeout(() => {
+        openModal('authPortalModal');
+      }, 400);
+    }
+
+    // Update Dashboard UI with Creator Data
+    function updateDashboard(profile) {
+      // Navbar
+      document.getElementById('navLoggedInState').classList.remove('hidden');
+      document.getElementById('navLoggedOutState').classList.add('hidden');
+      document.getElementById('loggedOutBanner').classList.add('hidden');
+      document.getElementById('navAvatar').src = profile.avatar;
+      document.getElementById('navChannelName').textContent = profile.name;
+      document.getElementById('navChannelHandle').textContent = profile.handle;
+
+      // Profile Card
+      document.getElementById('profileStatusBadge').className = "text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+      document.getElementById('profileStatusBadge').textContent = "● Studio Connected";
+      document.getElementById('profileCardAvatar').src = profile.avatar;
+      document.getElementById('profileCardName').innerHTML = `${profile.name} <span class="text-emerald-400 text-sm">✓</span>`;
+      document.getElementById('profileCardHandle').textContent = profile.handle;
+      document.getElementById('profileCardNiche').textContent = profile.niche;
+      document.getElementById('profileCardSubs').textContent = profile.subs;
+      document.getElementById('profileCardViews').textContent = profile.views;
+      document.getElementById('profileCardVideos').textContent = profile.videos;
+
+      // Health Score
+      document.getElementById('profileHealthScore').textContent = profile.healthScore;
+      document.getElementById('profileConsistencyVal').textContent = profile.consistency + '%';
+      document.getElementById('profileConsistencyBar').style.width = profile.consistency + '%';
+      document.getElementById('profileEngagementVal').textContent = profile.engagement + '%';
+      document.getElementById('profileEngagementBar').style.width = profile.engagement + '%';
+      document.getElementById('profileTrendVal').textContent = profile.trend + '%';
+      document.getElementById('profileTrendBar').style.width = profile.trend + '%';
+
+      // Monetization
+      document.getElementById('profileMonetizationBadge').textContent = profile.monetizationStatus;
+      document.getElementById('profileSubsGoal').innerHTML = `${profile.subs} / 1,000 <span class="text-emerald-400">✓ Done</span>`;
+      document.getElementById('profileWatchHoursVal').textContent = `${profile.watchHours.toLocaleString()} / 4,000 hrs (${profile.watchHoursPct}%)`;
+      document.getElementById('profileWatchHoursBar').style.width = Math.min(100, profile.watchHoursPct) + '%';
+      document.getElementById('profileStreakVal').textContent = profile.streak;
+      document.getElementById('profileMilestoneText').innerHTML = profile.milestoneText;
+
+      // Portal Session Header
+      document.getElementById('portalCurrentAvatar').src = profile.avatar;
+      document.getElementById('portalCurrentName').textContent = profile.name;
+      document.getElementById('portalCurrentBadge').className = "text-[9px] px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-300 font-bold";
+      document.getElementById('portalCurrentBadge').textContent = "Active";
+      document.getElementById('portalCurrentHandle').textContent = `${profile.handle} • ${profile.subs} Subs`;
+      document.getElementById('portalLogoutBtn').classList.remove('hidden');
+    }
+
+    // Dynamic Chart Updater
+    function updateGrowthChart(profile) {
+      if (!growthChartInstance) return;
+      growthChartInstance.data.datasets[0].data = profile.chartUpper;
+      growthChartInstance.data.datasets[1].data = profile.chartData;
+      growthChartInstance.data.datasets[2].data = profile.chartLower;
+      growthChartInstance.update();
+    }
+
     function addVaultIdea() {
       const input = document.getElementById('vaultInput');
       const text = input.value.trim();
@@ -639,18 +1073,19 @@
       }
     }
 
-    // Initialize Chart.js Growth Forecast
+    // Initialize Chart.js Growth Forecast & Auth Session
     window.onload = function() {
+      // 1. Initialize Chart
       const ctx = document.getElementById('growthChart').getContext('2d');
       const labels = ['Day 1', 'Day 5', 'Day 10', 'Day 15', 'Day 20', 'Day 25', 'Day 30'];
-      new Chart(ctx, {
+      growthChartInstance = new Chart(ctx, {
         type: 'line',
         data: {
           labels: labels,
           datasets: [
             {
               label: 'Upper 95% Confidence',
-              data: [28600, 29400, 30300, 31300, 32300, 33400, 34500],
+              data: activeCreator.chartUpper,
               borderColor: '#10b981',
               borderDash: [5, 5],
               fill: false,
@@ -658,7 +1093,7 @@
             },
             {
               label: 'Predicted Subscribers (Prophet)',
-              data: [28450, 29150, 29900, 30750, 31600, 32200, 32840],
+              data: activeCreator.chartData,
               borderColor: '#6366f1',
               backgroundColor: 'rgba(99, 102, 241, 0.15)',
               fill: true,
@@ -667,7 +1102,7 @@
             },
             {
               label: 'Lower 95% Confidence',
-              data: [28300, 28900, 29500, 30200, 30900, 31400, 32000],
+              data: activeCreator.chartLower,
               borderColor: '#64748b',
               borderDash: [5, 5],
               fill: false,
@@ -687,6 +1122,20 @@
           }
         }
       });
+
+      // 2. Restore Saved Auth Session
+      try {
+        const saved = JSON.parse(localStorage.getItem('creatorpilot_auth'));
+        if (saved && saved.isLoggedIn === false) {
+          handleLogout();
+        } else if (saved && saved.profileKey && CREATOR_PROFILES[saved.profileKey]) {
+          selectCreatorProfile(saved.profileKey);
+        } else {
+          updateDashboard(CREATOR_PROFILES.codecraft);
+        }
+      } catch (e) {
+        updateDashboard(CREATOR_PROFILES.codecraft);
+      }
     };
   </script>
 </body>

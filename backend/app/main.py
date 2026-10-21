@@ -10,7 +10,8 @@ from backend.app.controllers import (
     channel_controller,
     ml_controller,
     growth_controller,
-    coach_controller
+    coach_controller,
+    auth_controller
 )
 from backend.app.routers import trends
 
@@ -30,6 +31,7 @@ app.add_middleware(
 )
 
 # Register MVC Controllers
+app.include_router(auth_controller.router)
 app.include_router(channel_controller.router)
 app.include_router(ml_controller.router)
 app.include_router(growth_controller.router)

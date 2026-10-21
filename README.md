@@ -202,6 +202,10 @@ $$\hat{y}(t) = \beta_0 + \beta_1 t + \epsilon_t, \quad \text{CI}_{95\%} = \hat{y
 
 | Method | Endpoint | Controller | Description |
 | :--- | :--- | :--- | :--- |
+| `POST` | `/api/auth/login` | `AuthController` | Authenticates creator by handle/email, validates password, and returns session token. |
+| `POST` | `/api/auth/logout` | `AuthController` | Revokes active session token and persists offline telemetry. |
+| `GET` | `/api/auth/profiles` | `AuthController` | Returns available 1-click demo creator profiles (Tech, Gaming, Lifestyle). |
+| `GET` | `/api/auth/me` | `AuthController` | Fetches active authenticated creator channel profile. |
 | `GET` | `/api/channel/summary` | `ChannelController` | Real-time subscriber count, watch hours, and Health Score breakdown. |
 | `GET` | `/api/channel/notifications` | `ChannelController` | Proactive alerts: Upload Gap warning, streak risk, peak posting hour. |
 | `GET` | `/api/ml/growth-forecast` | `MLController` | 30-day forecast with 95% upper and lower confidence bounds. |
