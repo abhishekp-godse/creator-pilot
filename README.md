@@ -64,18 +64,22 @@ The application strictly separates data models, business logic controllers, and 
 
 ---
 
-## 🌟 3. Real-World Features & Problem Solutions
+### 🌟 3. Ten Core Functional Modules & Dedicated Webpages
 
-| Feature | The Real Creator Problem | How CreatorPilot Solves It |
-| :--- | :--- | :--- |
-| **🎙️ Voice AI Coach (Siri for Creators)** | Analytics dashboards don't talk, requiring manual interpretation. | Zero-latency speech recognition (`STT`) and browser speech synthesis (`TTS`) that answers *"Why did my last video flop?"* with real diagnostic data. |
-| **💡 Idea Vault & AI Prioritizer** | Creators write ideas in scattered notes and struggle to pick what to film. | Ranks ideas by **`0–100 Predicted Score`** and tags them by **`Production Effort`** *(Low: 1-2h vs. High: Deep Dive)*. |
-| **🤝 Peer Collab Matcher** | Channels hit growth plateaus when confined to their own audience. | Scans for creators in the same niche with **similar subscriber counts (15k–45k)** and generates custom cross-promotional video pitches. |
-| **📉 Drop-Off Hook Diagnosis** | High early drop-offs (40%+) destroy YouTube recommendation velocity. | Benchmarks early viewer retention against the **65% industry standard** and prescribes actionable intro edits. |
-| **🔍 Audience Content Gap Finder** | Creators run out of video ideas despite viewers constantly asking questions. | NLP regex & semantic clustering scans comment threads for unanswered questions that have never been covered in published videos. |
-| **⏰ Trend Decay Timer** | Creators jump on trends too late, after search momentum has died down. | Tracks search volume velocity ($dV/dt$) and provides an expiration countdown *(e.g. "Peak fading in 14 days")*. |
-| **🎯 Monetization Readiness Tracker** | Unclear milestone tracking toward the 4,000 watch hours YPP requirement. | Calculates exact daily watch hour deficits and prescribes targeted high-yield live streams and playlist bundles. |
-| **📊 Pre-Publish Title Scorer** | Guessing video titles results in poor initial Click-Through Rate (CTR). | Evaluates character length (optimal 45-65 chars), power words, emotional curiosity hooks, and clickbait risk. |
+CreatorPilot decomposes the creator intelligence workflow into **10 dedicated, deep-dive webpages** rather than cluttering everything onto a single screen. Every module features its own specialized analytical tools, simulations, and data visualizations while maintaining shared multi-creator state (`localStorage`) and instant cross-navigation:
+
+| # | Module / Dedicated Webpage | Official Syllabus Description | Dedicated Page Route (Localhost) | Offline File Path | Key Interactive Features |
+| :-: | :--- | :--- | :--- | :--- | :--- |
+| **1** | **Interactive Analytics Dashboard** | *Displays important performance metrics such as views, likes, comments, engagement, and subscriber growth.* | [`http://localhost:8080/index.html`](http://localhost:8080/index.html) | `c:\creator pilot\index.html` | 5-Metric Executive KPI bar (`Views: 1.84M`, `Likes: 142.8K`, `Comments: 18.4K`, `Engagement: 8.4%`), Health Score gauge (82/100), YPP 4,000 Watch Hours sprint, Quick-Jump Directory hub. |
+| **2** | **Content Performance Analysis** | *Analyses historical data to identify patterns and compare the performance of different videos or posts.* | [`http://localhost:8080/content-performance.html`](http://localhost:8080/content-performance.html) | `c:\creator pilot\content-performance.html` | Video Benchmarking Matrix vs 30-day baseline, Pattern Filter Pills (`Viral Breakout`, `Drop-off Warning`, `Evergreen`), interactive First 30s Retention drop-off simulator. |
+| **3** | **Upload Consistency Monitoring** | *Tracks the publishing schedule and helps creators maintain regular content uploads through reminders.* | [`http://localhost:8080/upload-consistency.html`](http://localhost:8080/upload-consistency.html) | `c:\creator pilot\upload-consistency.html` | 4-Week Upload Cadence Streak Tracker (`🔥 4 Weeks Active`), Pacing Alert Badge (`1 Day Overdue`), Target Frequency Tracker (`1 video every 5 days`), Algorithmic Boost indicator, Burnout Guard monitor. |
+| **4** | **Trend Identification** | *Helps identify trending topics and content ideas relevant to the creator's audience.* | [`http://localhost:8080/trends.html`](http://localhost:8080/trends.html) | `c:\creator pilot\trends.html` | Niche Trend Intelligence card showing search velocity spikes (`+140%`, `+220%`), peak decay countdown timers (`⏳ Peak expires in 14 days`), real-time Trend Velocity Evaluator, and Peer Creator Synergy Matcher. |
+| **5** | **Audience Sentiment Analysis** | *Uses Natural Language Processing (NLP) to analyse audience comments and classify opinions as positive, negative, or neutral.* | [`http://localhost:8080/sentiment.html`](http://localhost:8080/sentiment.html) | `c:\creator pilot\sentiment.html` | Sentiment Distribution Bar (`Positive 78%`, `Neutral 16%`, `Critical 6%`), NLP praise and critique keyword clusters, real-time comment feed with instant filtering, and interactive NLP Comment Classifier tester. |
+| **6** | **Content-Gap Discovery** | *Identifies potential content topics that creators may not have covered sufficiently and suggests ideas for future content.* | [`http://localhost:8080/content-gaps.html`](http://localhost:8080/content-gaps.html) | `c:\creator pilot\content-gaps.html` | Audience Content Gap Finder mining viewer questions (`89+ requests`, `103+ requests`), ranked Idea Vault with production effort badges, and "+ Add New Concept" modal with instant priority scoring. |
+| **7** | **Growth Prediction** | *Uses Machine Learning (ML) techniques to estimate future content performance based on historical data.* | [`http://localhost:8080/growth-prediction.html`](http://localhost:8080/growth-prediction.html) | `c:\creator pilot\growth-prediction.html` | Full-canvas Chart.js 30-Day Growth Forecast with Upper 95% CI, Predicted Median, and Lower 95% CI curves, Milestone trackers (50k / 100k Silver Play Button), and interactive What-If Cadence slider. |
+| **8** | **AI-Powered Growth Assistant** | *Provides conversational guidance and suggestions related to content strategy, audience engagement, and performance improvement.* | [`http://localhost:8080/ai-coach.html`](http://localhost:8080/ai-coach.html) | `c:\creator pilot\ai-coach.html` | **Gemini 1.5 Growth Engine**: Dedicated voice & conversational AI workspace with **zero-repetition multi-turn memory** and **authentic creator intelligence**. Features realistic YouTube Studio telemetry, exact Sponsorship Rate Cards ($32–$45 Tech CPM, 50% upfront payment contract safeguards), Studio Gear & Acoustic Blueprints ($99 dynamic broadcast mic, 45° softbox lighting), 2x Editing Speed hacks (Q/W Ripple Trims, J/K/L 1.5x scrubbing), and Burnout Protection buffers. |
+| **9** | **Weekly Content Planning** | *Helps creators prepare a weekly publishing schedule based on their goals and available analytical insights.* | [`http://localhost:8080/weekly-planner.html`](http://localhost:8080/weekly-planner.html) | `c:\creator pilot\weekly-planner.html` | 7-Day Interactive Publishing Workflow (Monday to Sunday) with interactive task checkboxes, real-time weekly progress meter, "+ Add Custom Task" injector, and weekly sprint exporter. |
+| **10** | **Notifications and Reminders** | *Provides reminders for planned uploads and important content-related activities to help creators manage their schedules effectively.* | [`http://localhost:8080/notifications.html`](http://localhost:8080/notifications.html) | `c:\creator pilot\notifications.html` | **Live Production Alarm & Countdown Deck**: Built with the **Web Audio API** for 100% offline audible synthesized chimes and alarm sirens. Includes real-time ticking digital countdown timer (`00:00:30`), animated progress bar, 4 quick 1-click presets (`⏱️ 30s Quick Demo`, `⏰ 5-Min Sprint`, `🌇 7:00 PM Slot`, `🛡️ 15m Break`), proactive cards with 1-click live alarm triggers, and dynamic global ringing alert modal with Snooze/Dismiss controls. |
 
 ---
 
@@ -83,61 +87,75 @@ The application strictly separates data models, business logic controllers, and 
 
 ```
 creator-pilot/
-├── backend/                             # Python / FastAPI MVC Backend
+├── Multi-Webpage Suite (Production Frontend)
+│   ├── index.html                           # [Module 1] Executive Analytics Dashboard & Navigation Hub
+│   ├── content-performance.html             # [Module 2] Content Performance Analysis & Benchmarking
+│   ├── upload-consistency.html              # [Module 3] Upload Consistency & Streak Monitoring
+│   ├── trends.html                          # [Module 4] Trend Identification & Synergy Matcher
+│   ├── sentiment.html                       # [Module 5] Audience Sentiment Analysis (NLP Engine)
+│   ├── content-gaps.html                    # [Module 6] Content-Gap Discovery & Ranked Idea Vault
+│   ├── growth-prediction.html               # [Module 7] Growth Prediction (ML Prophet Forecasting)
+│   ├── ai-coach.html                        # [Module 8] AI-Powered Growth Assistant & Voice Workspace
+│   ├── weekly-planner.html                  # [Module 9] Weekly 7-Day Publishing Workflow
+│   ├── notifications.html                   # [Module 10] Notifications & Custom Reminders Hub
+│   ├── preview_dashboard.html               # Standalone direct-file preview mirror
+│   ├── shared.js                            # Unified Multi-Creator State Engine & Speech Engine
+│   └── server.js                            # High-performance Node.js HTTP Server (Port 8080)
+│
+├── backend/                                 # Python / FastAPI MVC Backend
 │   ├── app/
-│   │   ├── models/                      # [M] Pydantic Domain Models
+│   │   ├── models/                          # [M] Pydantic Domain Models
 │   │   │   ├── channel_model.py
 │   │   │   ├── prediction_model.py
 │   │   │   ├── growth_model.py
 │   │   │   └── chat_model.py
-│   │   ├── controllers/                 # [C] API Routers & Controllers
+│   │   ├── controllers/                     # [C] API Routers & Controllers
 │   │   │   ├── channel_controller.py
 │   │   │   ├── ml_controller.py
 │   │   │   ├── growth_controller.py
 │   │   │   └── coach_controller.py
-│   │   ├── services/                    # Core Analytical & ML Engines
-│   │   │   ├── youtube_service.py       # API client & mock dataset fallback
-│   │   │   ├── ml_service.py            # Time-Series Regressor & Title Scorer
-│   │   │   ├── nlp_service.py           # Comment question miner & Sentiment
-│   │   │   ├── idea_vault_service.py    # Idea prioritizer by effort/score
-│   │   │   ├── collab_service.py        # Cosine similarity niche matcher
-│   │   │   └── coach_service.py         # LLM agent with context memory
-│   │   ├── config.py                    # Environment settings
-│   │   └── main.py                      # FastAPI entrypoint with CORS
-│   ├── demo_data.py                     # Realistic offline dataset for viva demo
-│   ├── requirements.txt                 # Backend dependencies
-│   ├── .env                             # Active environment configuration
+│   │   ├── services/                        # Core Analytical & ML Engines
+│   │   │   ├── youtube_service.py           # API client & mock dataset fallback
+│   │   │   ├── ml_service.py                # Time-Series Regressor & Title Scorer
+│   │   │   ├── nlp_service.py               # Comment question miner & Sentiment
+│   │   │   ├── idea_vault_service.py        # Idea prioritizer by effort/score
+│   │   │   ├── collab_service.py            # Cosine similarity niche matcher
+│   │   │   └── coach_service.py             # LLM agent with context memory
+│   │   ├── config.py                        # Environment settings
+│   │   └── main.py                          # FastAPI entrypoint with CORS
+│   ├── demo_data.py                         # Realistic offline dataset for viva demo
+│   ├── requirements.txt                     # Backend dependencies
+│   ├── .env                                 # Active environment configuration
 │   └── .env.example
 │
-├── frontend/                            # React / Vite / Tailwind MVC Client
+├── frontend/                                # React / Vite / Tailwind MVC Client
 │   ├── src/
-│   │   ├── controllers/                 # [C] Frontend Controller Hooks
-│   │   │   └── useCreatorPilot.js       # State orchestration & API client
-│   │   ├── components/                  # [V] Pure Presentation Views
+│   │   ├── controllers/                     # [C] Frontend Controller Hooks
+│   │   │   └── useCreatorPilot.js           # State orchestration & API client
+│   │   ├── components/                      # [V] Pure Presentation Views
 │   │   │   ├── Navbar.jsx
 │   │   │   ├── NotificationBanner.jsx
 │   │   │   ├── MetricsOverview.jsx
 │   │   │   ├── GrowthForecastChart.jsx
-│   │   │   ├── IdeaVaultView.jsx        # 💡 Idea Vault Backlog
-│   │   │   ├── CollabMatcherView.jsx    # 🤝 Peer Collab Matcher
+│   │   │   ├── IdeaVaultView.jsx
+│   │   │   ├── CollabMatcherView.jsx
 │   │   │   ├── ContentGapFinder.jsx
 │   │   │   ├── TrendIntelligence.jsx
-│   │   │   ├── AICoachModal.jsx         # 🎙️ Voice & Chat Modal
+│   │   │   ├── AICoachModal.jsx
 │   │   │   ├── TitleScorerModal.jsx
 │   │   │   └── WeeklyPlanModal.jsx
-│   │   ├── App.jsx                      # Main View Coordinator
-│   │   ├── main.jsx                     # Root React DOM entry
-│   │   └── index.css                    # Tailwind design system
+│   │   ├── App.jsx                          # Main View Coordinator
+│   │   ├── main.jsx                         # Root React DOM entry
+│   │   └── index.css                        # Tailwind design system
 │   ├── package.json
 │   ├── vite.config.js
 │   └── tailwind.config.js
 │
 ├── .vscode/
-│   └── tasks.json                       # VS Code 1-click execution tasks
-├── START_LOCALHOST.bat                  # 🚀 Master 1-Click Localhost Launcher (Port 8080)
-├── start_server.ps1                     # Native Windows socket server (Zero external dependencies)
-├── index.html                           # Unified localhost entrypoint
-└── preview_dashboard.html               # Standalone direct-file preview
+│   └── tasks.json                           # VS Code 1-click execution tasks
+├── START_LOCALHOST.bat                      # 🚀 Master 1-Click Localhost Launcher (Port 8080)
+├── start_server.ps1                         # Native Windows socket server
+└── README.md                                # Comprehensive Project Documentation
 ```
 
 ---
@@ -208,6 +226,7 @@ $$\hat{y}(t) = \beta_0 + \beta_1 t + \epsilon_t, \quad \text{CI}_{95\%} = \hat{y
 | `GET` | `/api/auth/me` | `AuthController` | Fetches active authenticated creator channel profile. |
 | `GET` | `/api/channel/summary` | `ChannelController` | Real-time subscriber count, watch hours, and Health Score breakdown. |
 | `GET` | `/api/channel/notifications` | `ChannelController` | Proactive alerts: Upload Gap warning, streak risk, peak posting hour. |
+| `GET` | `/api/channel/sentiment` | `ChannelController` | Audience sentiment distribution (Pos/Neu/Crit), NLP keyword tags, and comment sentiment scoring. |
 | `GET` | `/api/ml/growth-forecast` | `MLController` | 30-day forecast with 95% upper and lower confidence bounds. |
 | `POST` | `/api/ml/score-title` | `MLController` | Predicts CTR rating (0-100), letter grade (A-D), and clickbait risk. |
 | `GET` | `/api/ml/hook-diagnostics` | `MLController` | Analyzes first 30s viewer drop-off against the 65% retention baseline. |

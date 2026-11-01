@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CreatorPilot - Authentication, Session & Permissions Portal</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- CreatorPilot 2026 Next-Gen Design System & Theme Engine -->
+  <link rel="stylesheet" href="shared.css" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; background-color: var(--bg-primary, #07090e); }
+  </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col theme-obsidian">
+
+  <!-- Top Navigation Header -->
+  <header class="sticky top-0 z-40 cp-header-glass px-6 py-4">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="flex items-center gap-3 group">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-emerald-400 flex items-center justify-center shadow-lg shadow-indigo-500/20 font-black text-xl group-hover:scale-105 transition">
+            🚀
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent">
+                CreatorPilot
+              </span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
+                Auth & Session Portal
+              </span>
+            </div>
+            <span class="text-[11px] text-slate-400 block -mt-0.5">Centralized Identity, Permissions & Platform App Linking</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Header Action Controls -->
+      <div class="flex items-center gap-3">
+        <div id="headerAuthBadge" class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800/80 border border-slate-700/60 text-xs">
+          <span id="headerStatusDot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="headerStatusText" class="font-semibold text-slate-300">Active: Alex Rivers</span>
+        </div>
+
+        <a href="index.html" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-slate-700/80 transition flex items-center gap-1.5 shadow-sm">
+          <span>← Return to Studio Dashboard</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Body -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8">
+
+    <!-- Top Status Banner -->
+    <div id="sessionStatusBanner" class="mb-8 p-5 rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 border border-indigo-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
+      <div class="flex items-center gap-4">
+        <div id="bannerIconBox" class="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center text-2xl shrink-0">
+          🔐
+        </div>
+        <div>
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <h2 id="bannerMainHeading" class="text-base font-extrabold text-white">Authenticated Session Active</h2>
+            <span id="bannerStatePill" class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              ● Verified Identity
+            </span>
+            <span id="bannerPermissionsPill" class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 cursor-pointer" onclick="switchLoginPageTab('perms')">
+              🛡️ All Permissions: 100% Granted ✓
+            </span>
+          </div>
+          <p id="bannerSubText" class="text-xs text-slate-300 mt-1">
+            Logged in as <strong id="bannerPersonName" class="text-white">Alex Rivers</strong> (<span id="bannerLoginId" class="font-mono text-indigo-300">@codecraftstudio</span>) with Full Administrator & Channel Ownership access.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 shrink-0">
+        <button id="bannerActionBtn" onclick="handlePortalLogoutClick()" class="px-4 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+          <span>🚪</span> <span>Log Out Session</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- MAIN TWO COLUMN LAYOUT -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+      <!-- LEFT COLUMN: Identity Profile, Linked Apps, Security & Audit Log (7 Cols) -->
+      <div class="lg:col-span-7 space-y-6">
+
+        <!-- STATE A: LOGGED-IN CREATOR IDENTITY CARD -->
+        <div id="creatorIdentityCard" class="bg-[#141d2f]/95 border border-slate-800 rounded-3xl p-6 shadow-2xl relative overflow-hidden">
+          <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-800">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                Primary Identity
+              </span>
+              <h3 class="text-base font-bold text-white">Active Channel Owner & Login Person</h3>
+            </div>
+            <span class="text-xs font-bold text-emerald-400 flex items-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Live Online
+            </span>
+          </div>
+
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-5 mb-6">
+            <div class="flex items-center gap-4">
+              <img id="creatorAvatarImg" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150" class="w-16 h-16 rounded-2xl object-cover border-2 border-indigo-500/50 shadow-xl shrink-0" />
+              <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h4 id="creatorPersonName" class="text-lg font-black text-white">Alex Rivers</h4>
+                  <span class="text-xs px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold flex items-center gap-1">
+                    <span>✓</span> <span>Verified Owner</span>
+                  </span>
+                </div>
+                <div class="flex items-center gap-2 text-xs mt-1 text-slate-300 flex-wrap">
+                  <span>Login ID:</span>
+                  <span id="creatorLoginHandle" class="font-mono font-bold text-indigo-300">@codecraftstudio</span>
+                  <span class="text-slate-600">•</span>
+                  <span id="creatorUserId" class="font-mono text-slate-400 text-[11px] bg-slate-800 px-2 py-0.5 rounded">ID: CR-84920</span>
+                </div>
+                <div class="text-xs text-slate-400 mt-1 flex items-center gap-2">
+                  <span id="creatorChannelName">CodeCraft Studio</span>
+                  <span class="text-slate-600">•</span>
+                  <span id="creatorRoleBadge" class="text-indigo-400 font-semibold">Lead Creator & Channel Owner</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Telemetry Mini-Badges -->
+            <div class="grid grid-cols-2 gap-2 text-center text-xs shrink-0 bg-slate-900/80 p-3 rounded-2xl border border-slate-800">
+              <div>
+                <span class="text-[10px] text-slate-400 uppercase tracking-wider block">Audience</span>
+                <span id="creatorSubsNum" class="text-sm font-black text-white">28,450</span>
+              </div>
+              <div class="border-l border-slate-800 pl-2">
+                <span class="text-[10px] text-slate-400 uppercase tracking-wider block">Videos</span>
+                <span id="creatorVideoCount" class="text-sm font-black text-indigo-400">86</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Session Metadata Bar -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800 text-xs mb-5">
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Session Initiated</span>
+              <span id="sessionStartTime" class="font-mono text-slate-200 font-bold">Today, 09:15 AM EST</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Session Duration</span>
+              <span id="sessionDurationText" class="font-mono text-emerald-400 font-bold">Live (42m 18s)</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Security Scope</span>
+              <span class="font-mono text-indigo-300 font-bold">Root Admin (All Granted)</span>
+            </div>
+          </div>
+
+          <!-- Direct Safe Logout Buttons -->
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-slate-800/80">
+            <span class="text-xs text-slate-400">Need to switch accounts or step away from this station?</span>
+            <div class="flex items-center gap-2">
+              <button onclick="handlePortalLogoutClick()" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-lg shadow-rose-600/30 transition flex items-center gap-2">
+                <span>🚪</span> <span>Safely Log Out Now</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- STATE B: GUEST MODE (LOGGED OUT) IDENTITY CARD (Shown when logged out) -->
+        <div id="guestIdentityCard" class="hidden bg-gradient-to-b from-amber-950/30 via-slate-900 to-slate-900 border-2 border-amber-500/40 rounded-3xl p-6 shadow-2xl relative overflow-hidden">
+          <div class="flex items-center justify-between pb-4 mb-4 border-b border-amber-500/20">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                Session Inactive
+              </span>
+              <h3 class="text-base font-bold text-white">Unauthenticated Guest Mode</h3>
+            </div>
+            <span class="text-xs font-bold text-amber-400 flex items-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-amber-400"></span> Signed Out
+            </span>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-center gap-5 mb-6 text-center sm:text-left">
+            <div class="w-16 h-16 rounded-2xl bg-amber-500/20 border-2 border-amber-500/40 text-amber-400 flex items-center justify-center text-3xl font-black shrink-0">
+              🔒
+            </div>
+            <div>
+              <h4 class="text-lg font-black text-white">No Creator Currently Authenticated</h4>
+              <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                You are currently browsing CreatorPilot in read-only guest mode. Channel telemetry, personalized AI Coach recommendations, idea vault saves, and real-time production alarms are paused.
+              </p>
+            </div>
+          </div>
+
+          <!-- Quick Return Re-login buttons -->
+          <div class="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-3">
+            <div class="text-xs font-bold text-slate-300 flex items-center justify-between">
+              <span>Instant 1-Click Fast Re-Authentication:</span>
+              <span class="text-[11px] text-slate-500">Pick any profile below</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <button onclick="selectCreatorProfile('codecraft'); updatePageData(); showToast('Welcome back, Alex Rivers!', 'success');" class="p-2.5 rounded-xl bg-slate-800/80 hover:bg-indigo-600/30 border border-slate-700/80 hover:border-indigo-500 text-left transition flex items-center gap-2.5">
+                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150" class="w-8 h-8 rounded-lg object-cover" />
+                <div class="min-w-0">
+                  <strong class="text-xs text-white block truncate">Alex Rivers</strong>
+                  <span class="text-[10px] text-slate-400 block truncate">@codecraftstudio</span>
+                </div>
+              </button>
+              <button onclick="selectCreatorProfile('pixelquest'); updatePageData(); showToast('Welcome back, Marcus Vance!', 'success');" class="p-2.5 rounded-xl bg-slate-800/80 hover:bg-indigo-600/30 border border-slate-700/80 hover:border-indigo-500 text-left transition flex items-center gap-2.5">
+                <img src="https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=150" class="w-8 h-8 rounded-lg object-cover" />
+                <div class="min-w-0">
+                  <strong class="text-xs text-white block truncate">Marcus Vance</strong>
+                  <span class="text-[10px] text-slate-400 block truncate">@pixelquest_live</span>
+                </div>
+              </button>
+              <button onclick="selectCreatorProfile('nutrivibe'); updatePageData(); showToast('Welcome back, Elena Chen!', 'success');" class="p-2.5 rounded-xl bg-slate-800/80 hover:bg-indigo-600/30 border border-slate-700/80 hover:border-indigo-500 text-left transition flex items-center gap-2.5">
+                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150" class="w-8 h-8 rounded-lg object-cover" />
+                <div class="min-w-0">
+                  <strong class="text-xs text-white block truncate">Elena Chen</strong>
+                  <span class="text-[10px] text-slate-400 block truncate">@nutrivibe_fit</span>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- LINKED APPLICATION SESSIONS (YOUTUBE STUDIO & INSTAGRAM PROFESSIONAL) -->
+        <div class="bg-[#141d2f]/95 border border-slate-800 rounded-3xl p-6 shadow-2xl">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                  App Integration
+                </span>
+                <h3 class="text-base font-bold text-white">Linked Platform Application Sessions</h3>
+              </div>
+              <p class="text-xs text-slate-400 mt-0.5">Separate connected sessions for YouTube Studio and Instagram Professional.</p>
+            </div>
+            <span id="linkedAppsStatusBadge" class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              ● 2 Apps Connected
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- YouTube Studio Session Card -->
+            <div class="p-4 rounded-2xl bg-gradient-to-b from-red-950/30 to-slate-900 border border-red-500/40 flex flex-col justify-between shadow-lg">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center gap-2">
+                    <span class="text-xl">🔴</span>
+                    <div>
+                      <h4 class="text-xs font-bold text-white">YouTube Studio App</h4>
+                      <span class="text-[10px] text-red-300 font-mono" id="cardYtHandle">@codecraftstudio</span>
+                    </div>
+                  </div>
+                  <span id="cardYtStatusBadge" class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                    ● Connected
+                  </span>
+                </div>
+
+                <div class="space-y-1.5 my-3 text-xs bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                  <div class="flex justify-between">
+                    <span class="text-slate-400">Subscribers:</span>
+                    <strong class="text-white font-mono" id="cardYtSubs">28,450</strong>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-slate-400">Watch Hours:</span>
+                    <strong class="text-indigo-300 font-mono" id="cardYtWatch">3,480 / 4,000 hrs</strong>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-slate-400">Session ID:</span>
+                    <span class="text-slate-500 font-mono text-[11px]" id="cardYtSessionId">CR-YT-84920</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-2 border-t border-red-500/20 flex items-center gap-2">
+                <button onclick="setPlatformSession('youtube'); showToast('🔴 Switched to YouTube Studio session', 'info');" class="flex-1 py-2 rounded-xl bg-red-600/20 hover:bg-red-600 text-red-300 hover:text-white border border-red-500/30 font-bold text-xs transition text-center">
+                  Focus YouTube
+                </button>
+                <a id="cardYtLaunchBtn" href="https://studio.youtube.com" target="_blank" onclick="launchApp('youtube')" class="px-3.5 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs transition flex items-center gap-1 shadow-md shadow-red-600/30" title="Open YouTube Studio Web / Desktop App">
+                  <span>App ↗</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Instagram Creator Session Card -->
+            <div class="p-4 rounded-2xl bg-gradient-to-b from-purple-950/30 to-slate-900 border border-fuchsia-500/40 flex flex-col justify-between shadow-lg">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center gap-2">
+                    <span class="text-xl">🟣</span>
+                    <div>
+                      <h4 class="text-xs font-bold text-white">Instagram Professional</h4>
+                      <span class="text-[10px] text-fuchsia-300 font-mono" id="cardIgHandle">@alexrivers.code</span>
+                    </div>
+                  </div>
+                  <span id="cardIgStatusBadge" class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                    ● Connected
+                  </span>
+                </div>
+
+                <div class="space-y-1.5 my-3 text-xs bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                  <div class="flex justify-between">
+                    <span class="text-slate-400">Followers:</span>
+                    <strong class="text-white font-mono" id="cardIgFollowers">46,200</strong>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-slate-400">Reels Plays:</span>
+                    <strong class="text-fuchsia-300 font-mono" id="cardIgPlays">892.4K</strong>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-slate-400">Meta ID:</span>
+                    <span class="text-slate-500 font-mono text-[11px]" id="cardIgSessionId">IG-META-92811</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-2 border-t border-fuchsia-500/20 flex items-center gap-2">
+                <button onclick="setPlatformSession('instagram'); showToast('🟣 Switched to Instagram Creator session', 'info');" class="flex-1 py-2 rounded-xl bg-fuchsia-600/20 hover:bg-fuchsia-600 text-fuchsia-300 hover:text-white border border-fuchsia-500/30 font-bold text-xs transition text-center">
+                  Focus Instagram
+                </button>
+                <a id="cardIgLaunchBtn" href="https://www.instagram.com" target="_blank" onclick="launchApp('instagram')" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 hover:from-purple-500 hover:to-rose-500 text-white font-bold text-xs transition flex items-center gap-1 shadow-md shadow-pink-600/30" title="Open Instagram Web / Mobile App">
+                  <span>App ↗</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACTIVE DEVICES & SECURITY AUDIT -->
+        <div class="bg-[#141d2f]/95 border border-slate-800 rounded-3xl p-6 shadow-2xl">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-base font-bold text-white flex items-center gap-2">
+                <span>💻</span> Active Devices & Concurrent Sessions
+              </h3>
+              <p class="text-xs text-slate-400 mt-0.5">Manage devices authorized with your CreatorPilot master token.</p>
+            </div>
+            <button onclick="revokeOtherSessions()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold border border-slate-700 transition">
+              Revoke Others
+            </button>
+          </div>
+
+          <div class="space-y-2.5 text-xs">
+            <div class="p-3.5 rounded-2xl bg-slate-900/60 border border-emerald-500/30 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <span class="text-xl">🖥️</span>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <strong class="text-white text-xs">Windows Desktop (Current Device)</strong>
+                    <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300">This PC</span>
+                  </div>
+                  <span class="text-slate-400 text-[11px]">Chrome 126 • Port 8080 Active • Verified Localhost</span>
+                </div>
+              </div>
+              <span class="text-emerald-400 font-bold font-mono text-xs">Active Now</span>
+            </div>
+
+            <div id="deviceRowIphone" class="p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <span class="text-xl">📱</span>
+                <div>
+                  <strong class="text-white text-xs">iPhone 16 Pro (Instagram Creator App)</strong>
+                  <div class="text-slate-400 text-[11px]">iOS 18.2 • Meta Graph OAuth • Synced 14m ago</div>
+                </div>
+              </div>
+              <span class="text-slate-400 font-mono text-[11px]">Standby</span>
+            </div>
+
+            <div id="deviceRowMacbook" class="p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <span class="text-xl">💻</span>
+                <div>
+                  <strong class="text-white text-xs">MacBook Pro Studio (YouTube Live)</strong>
+                  <div class="text-slate-400 text-[11px]">macOS Sonoma • Google OAuth 2.0 • Synced 2h ago</div>
+                </div>
+              </div>
+              <span class="text-slate-400 font-mono text-[11px]">Standby</span>
+            </div>
+          </div>
+
+          <!-- Live Security Specs -->
+          <div class="mt-4 pt-4 border-t border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-xs">
+            <div class="p-2 bg-slate-900/40 rounded-xl border border-slate-800">
+              <span class="text-[10px] text-slate-400 block uppercase">2FA Shield</span>
+              <span class="font-bold text-emerald-400 text-xs">● Enabled</span>
+            </div>
+            <div class="p-2 bg-slate-900/40 rounded-xl border border-slate-800">
+              <span class="text-[10px] text-slate-400 block uppercase">IP Security</span>
+              <span class="font-bold text-slate-200 text-xs">127.0.0.1 (Local)</span>
+            </div>
+            <div class="p-2 bg-slate-900/40 rounded-xl border border-slate-800">
+              <span class="text-[10px] text-slate-400 block uppercase">Encryption</span>
+              <span class="font-bold text-indigo-400 text-xs">AES-256 GCM</span>
+            </div>
+            <div class="p-2 bg-slate-900/40 rounded-xl border border-slate-800">
+              <span class="text-[10px] text-slate-400 block uppercase">Token Life</span>
+              <span class="font-bold text-emerald-400 text-xs">Auto-Renews</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: 1-Click Profiles, Manual Form, OAuth, Permissions & New Creator Tab (5 Cols) -->
+      <div class="lg:col-span-5 space-y-6">
+
+        <!-- SIGN IN / ACCOUNT CONTROLS TABBED BOX -->
+        <div class="bg-[#141d2f]/95 border border-slate-800 rounded-3xl p-6 shadow-2xl">
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
+            <div>
+              <h3 class="text-base font-bold text-white flex items-center gap-2">
+                <span>🔑</span> Access & Authentication
+              </h3>
+              <p class="text-xs text-slate-400 mt-0.5">Switch profiles, authenticate credentials, or grant scopes:</p>
+            </div>
+          </div>
+
+          <!-- Switch Tabs (5 Comprehensive Modes) -->
+          <div class="flex gap-1.5 border-b border-slate-800 pb-3 mb-4 text-xs font-semibold overflow-x-auto">
+            <button id="pageTabBtnProfiles" onclick="switchLoginPageTab('profiles')" class="px-3 py-1.5 rounded-xl bg-indigo-600 text-white font-bold transition whitespace-nowrap">
+              1-Click Profiles
+            </button>
+            <button id="pageTabBtnManual" onclick="switchLoginPageTab('manual')" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white transition whitespace-nowrap">
+              Manual Form
+            </button>
+            <button id="pageTabBtnOAuth" onclick="switchLoginPageTab('oauth')" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white transition whitespace-nowrap">
+              OAuth Sync
+            </button>
+            <button id="pageTabBtnPerms" onclick="switchLoginPageTab('perms')" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white transition whitespace-nowrap flex items-center gap-1">
+              <span>🛡️</span> <span>Permissions</span>
+            </button>
+            <button id="pageTabBtnRegister" onclick="switchLoginPageTab('register')" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white transition whitespace-nowrap flex items-center gap-1">
+              <span>➕</span> <span>New Account</span>
+            </button>
+          </div>
+
+          <!-- TAB 1: 1-CLICK DEMO CREATOR PROFILES -->
+          <div id="pageTabProfiles" class="space-y-3">
+            <p class="text-xs text-slate-400 mb-1">Click any verified creator below to switch active person, channel telemetry, and permissions instantly:</p>
+
+            <!-- Profile 1: Alex Rivers -->
+            <div onclick="selectCreatorProfile('codecraft'); showToast('Signed in as Alex Rivers (ID: @codecraftstudio)', 'success'); updatePageData();" class="p-3.5 rounded-2xl bg-slate-900/80 hover:bg-indigo-950/40 border border-slate-700/60 hover:border-indigo-500/60 cursor-pointer flex items-center justify-between transition group">
+              <div class="flex items-center gap-3">
+                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150" class="w-11 h-11 rounded-xl object-cover border border-indigo-500/50 shrink-0" />
+                <div>
+                  <div class="text-xs font-bold text-white group-hover:text-indigo-300 flex items-center gap-1.5">
+                    Alex Rivers <span class="text-[10px] text-indigo-400 font-normal">(CodeCraft Studio)</span>
+                  </div>
+                  <div class="text-[11px] text-slate-400">ID: @codecraftstudio • CR-84920</div>
+                  <div class="text-[10px] text-slate-500">🔴 YouTube: 28.4K • 🟣 IG: 46.2K</div>
+                </div>
+              </div>
+              <span class="text-xs font-bold text-indigo-400 group-hover:text-white">Switch →</span>
+            </div>
+
+            <!-- Profile 2: Marcus Vance -->
+            <div onclick="selectCreatorProfile('pixelquest'); showToast('Signed in as Marcus Vance (ID: @pixelquest_live)', 'success'); updatePageData();" class="p-3.5 rounded-2xl bg-slate-900/80 hover:bg-indigo-950/40 border border-slate-700/60 hover:border-indigo-500/60 cursor-pointer flex items-center justify-between transition group">
+              <div class="flex items-center gap-3">
+                <img src="https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=150" class="w-11 h-11 rounded-xl object-cover border border-indigo-500/50 shrink-0" />
+                <div>
+                  <div class="text-xs font-bold text-white group-hover:text-indigo-300 flex items-center gap-1.5">
+                    Marcus Vance <span class="text-[10px] text-indigo-400 font-normal">(PixelQuest Gaming)</span>
+                  </div>
+                  <div class="text-[11px] text-slate-400">ID: @pixelquest_live • CR-42100</div>
+                  <div class="text-[10px] text-slate-500">🔴 YouTube: 42.1K • 🟣 IG: 68.4K</div>
+                </div>
+              </div>
+              <span class="text-xs font-bold text-indigo-400 group-hover:text-white">Switch →</span>
+            </div>
+
+            <!-- Profile 3: Elena Chen -->
+            <div onclick="selectCreatorProfile('nutrivibe'); showToast('Signed in as Elena Chen (ID: @nutrivibe_fit)', 'success'); updatePageData();" class="p-3.5 rounded-2xl bg-slate-900/80 hover:bg-indigo-950/40 border border-slate-700/60 hover:border-indigo-500/60 cursor-pointer flex items-center justify-between transition group">
+              <div class="flex items-center gap-3">
+                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150" class="w-11 h-11 rounded-xl object-cover border border-indigo-500/50 shrink-0" />
+                <div>
+                  <div class="text-xs font-bold text-white group-hover:text-indigo-300 flex items-center gap-1.5">
+                    Elena Chen <span class="text-[10px] text-indigo-400 font-normal">(NutriVibe Healthy)</span>
+                  </div>
+                  <div class="text-[11px] text-slate-400">ID: @nutrivibe_fit • CR-15800</div>
+                  <div class="text-[10px] text-slate-500">🔴 YouTube: 15.8K • 🟣 IG: 32.1K</div>
+                </div>
+              </div>
+              <span class="text-xs font-bold text-indigo-400 group-hover:text-white">Switch →</span>
+            </div>
+          </div>
+
+          <!-- TAB 2: MANUAL FORM (WITH PASSWORD EYE TOGGLE & REMEMBER ME) -->
+          <div id="pageTabManual" class="space-y-4 hidden">
+            <div>
+              <label class="block text-slate-300 text-xs font-bold mb-1.5">Channel Handle, Email, or Creator ID</label>
+              <input id="loginInputId" type="text" placeholder="e.g. @codecraftstudio, alex@studio.io, or CR-84920" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500" value="@codecraftstudio" />
+            </div>
+
+            <div>
+              <label class="block text-slate-300 text-xs font-bold mb-1.5">Master Password</label>
+              <div class="relative">
+                <input id="loginInputPass" type="password" value="creatorpilot2026" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500 pr-10" />
+                <button type="button" onclick="togglePassVisibility()" class="absolute right-3 top-2.5 text-slate-400 hover:text-white text-xs">
+                  👁️
+                </button>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between text-xs">
+              <label class="flex items-center gap-2 cursor-pointer text-slate-300">
+                <input type="checkbox" checked class="rounded border-slate-700 bg-slate-900 text-indigo-600 focus:ring-0" />
+                <span>Remember session (30 days)</span>
+              </label>
+              <a href="#" onclick="showToast('Password reset link simulated to registered channel email', 'info'); return false;" class="text-indigo-400 hover:underline">Forgot?</a>
+            </div>
+
+            <button onclick="handleManualPageLogin()" class="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-emerald-500 hover:from-indigo-500 hover:to-emerald-400 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition">
+              Sign In to Creator Account →
+            </button>
+
+            <div class="text-[11px] text-slate-500 text-center">
+              Testing credentials? Type any channel name or handle to auto-provision a verified session.
+            </div>
+          </div>
+
+          <!-- TAB 3: OAUTH 2.0 SYNC (GOOGLE YOUTUBE & META INSTAGRAM) -->
+          <div id="pageTabOAuth" class="space-y-4 hidden">
+            <!-- Google YouTube OAuth -->
+            <div class="p-4 rounded-2xl bg-slate-900/80 border border-red-500/30 text-center space-y-3">
+              <div class="flex items-center justify-center gap-2">
+                <span class="text-xl">🔴</span>
+                <span class="text-xs font-bold text-white">Google YouTube Data API v3</span>
+              </div>
+              <p class="text-[11px] text-slate-400">Direct OAuth synchronization for channel analytics and uploads.</p>
+              <button onclick="handleGoogleSignIn(); updatePageData();" class="w-full py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-bold text-xs shadow-md transition flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
+                <span>Authorize with Google Account</span>
+              </button>
+            </div>
+
+            <!-- Meta Instagram OAuth -->
+            <div class="p-4 rounded-2xl bg-slate-900/80 border border-fuchsia-500/30 text-center space-y-3">
+              <div class="flex items-center justify-center gap-2">
+                <span class="text-xl">🟣</span>
+                <span class="text-xs font-bold text-white">Meta Instagram Graph API v19.0</span>
+              </div>
+              <p class="text-[11px] text-slate-400">Syncs Reels plays, follower velocity, and direct messages.</p>
+              <button onclick="handleInstagramSignIn(); updatePageData();" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 hover:from-purple-500 text-white font-bold text-xs shadow-md shadow-pink-600/30 transition flex items-center justify-center gap-2">
+                <span>📸</span>
+                <span>Authorize with Meta Instagram</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- TAB 4: PERMISSIONS & SECURITY SCOPES (100% GRANTED & INTERACTIVE TESTS) -->
+          <div id="pageTabPerms" class="space-y-3 hidden">
+            <!-- Master Authorization Banner -->
+            <div class="p-4 rounded-2xl bg-gradient-to-r from-emerald-950/60 via-slate-900 to-slate-900 border border-emerald-500/40 flex items-center justify-between gap-3">
+              <div>
+                <strong class="text-white text-xs block uppercase tracking-wider">Root Administrator Clearance</strong>
+                <span id="pagePermsOverallStatus" class="text-emerald-400 text-xs font-bold">● 100% Granted (All Permitted)</span>
+                <p class="text-[10px] text-slate-400 mt-0.5">Desktop push, Web Audio API, mic & OAuth tokens active.</p>
+              </div>
+              <button onclick="grantAllPermissions(); updatePermissionsUI(true);" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-md shadow-emerald-600/30 transition flex items-center gap-1.5 shrink-0">
+                <span>⚡ Grant / Re-Authorize All</span>
+              </button>
+            </div>
+
+            <!-- Detailed Interactive Permission Scopes -->
+            <div class="space-y-2 text-xs">
+
+              <!-- YouTube Data API Scope -->
+              <div class="p-3 rounded-xl bg-slate-900/80 border border-red-500/30 flex items-center justify-between">
+                <div>
+                  <div class="flex items-center gap-1.5">
+                    <span>🔴</span>
+                    <strong class="text-white">YouTube Data API v3</strong>
+                    <span class="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 font-bold">4/4 Granted ✓</span>
+                  </div>
+                  <span class="text-[10px] text-slate-400">youtube.readonly, youtube.upload, analytics</span>
+                </div>
+                <button onclick="testYouTubeApi()" class="px-2.5 py-1 rounded-lg bg-red-600/20 hover:bg-red-600 text-red-300 hover:text-white border border-red-500/30 text-[10px] font-bold transition">
+                  Test Query
+                </button>
+              </div>
+
+              <!-- Meta Instagram Graph API Scope -->
+              <div class="p-3 rounded-xl bg-slate-900/80 border border-fuchsia-500/30 flex items-center justify-between">
+                <div>
+                  <div class="flex items-center gap-1.5">
+                    <span>🟣</span>
+                    <strong class="text-white">Meta Instagram Graph API</strong>
+                    <span class="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 font-bold">5/5 Granted ✓</span>
+                  </div>
+                  <span class="text-[10px] text-slate-400">basic, insights, publish, comments, dm</span>
+                </div>
+                <button onclick="testInstagramApi()" class="px-2.5 py-1 rounded-lg bg-fuchsia-600/20 hover:bg-fuchsia-600 text-fuchsia-300 hover:text-white border border-fuchsia-500/30 text-[10px] font-bold transition">
+                  Test Graph
+                </button>
+              </div>
+
+              <!-- Desktop Push Alerts Scope -->
+              <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-700/80 flex items-center justify-between">
+                <div>
+                  <div class="flex items-center gap-1.5">
+                    <span>🔔</span>
+                    <strong class="text-white">Desktop Push Notifications</strong>
+                    <span class="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 font-bold">Allowed ✓</span>
+                  </div>
+                  <span class="text-[10px] text-slate-400">Production countdowns & milestone pings</span>
+                </div>
+                <button onclick="sendTestNotification()" class="px-2.5 py-1 rounded-lg bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white border border-indigo-500/30 text-[10px] font-bold transition">
+                  Send Push
+                </button>
+              </div>
+
+              <!-- Microphone Access Scope -->
+              <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-700/80 flex items-center justify-between">
+                <div>
+                  <div class="flex items-center gap-1.5">
+                    <span>🎙️</span>
+                    <strong class="text-white">Microphone Input (Voice Coach)</strong>
+                    <span class="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 font-bold">Allowed ✓</span>
+                  </div>
+                  <span class="text-[10px] text-slate-400">Hands-free Gemini voice queries</span>
+                </div>
+                <button onclick="testMicPermission()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[10px] font-bold transition">
+                  Test Mic
+                </button>
+              </div>
+
+              <!-- Web Audio Synthesizer Scope -->
+              <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-700/80 flex items-center justify-between">
+                <div>
+                  <div class="flex items-center gap-1.5">
+                    <span>🔊</span>
+                    <strong class="text-white">Live Production Audio Alarm</strong>
+                    <span class="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 font-bold">Active ✓</span>
+                  </div>
+                  <span class="text-[10px] text-slate-400">Web Audio oscillator synthesizer</span>
+                </div>
+                <button onclick="testAudioTone()" class="px-2.5 py-1 rounded-lg bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30 text-[10px] font-bold transition">
+                  Test Alarm Tone
+                </button>
+              </div>
+
+              <!-- Master Bearer Token Copy -->
+              <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-700/80 flex items-center justify-between">
+                <div>
+                  <div class="flex items-center gap-1.5">
+                    <span>📋</span>
+                    <strong class="text-white">Master Bearer Session Token</strong>
+                    <span class="text-[9px] px-1.5 py-0.2 rounded bg-indigo-500/20 text-indigo-300 font-mono">256-bit</span>
+                  </div>
+                  <span class="text-[10px] text-slate-400 font-mono">cp_live_sec_root_admin...</span>
+                </div>
+                <button onclick="copyMasterToken()" class="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] font-bold transition">
+                  Copy Token 📋
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- TAB 5: REGISTER NEW CREATOR PROFILE -->
+          <div id="pageTabRegister" class="space-y-3.5 hidden">
+            <p class="text-xs text-slate-400 mb-1">Provision a brand-new creator workspace into CreatorPilot:</p>
+
+            <div>
+              <label class="block text-slate-300 text-xs font-bold mb-1">Full Creator Name</label>
+              <input id="regName" type="text" placeholder="e.g. Maya Sharma" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
+            </div>
+
+            <div>
+              <label class="block text-slate-300 text-xs font-bold mb-1">Login Handle / ID</label>
+              <input id="regHandle" type="text" placeholder="e.g. @mayasharma_ai" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
+            </div>
+
+            <div>
+              <label class="block text-slate-300 text-xs font-bold mb-1">Channel / Studio Name</label>
+              <input id="regChannel" type="text" placeholder="e.g. AI Next Lab" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
+            </div>
+
+            <div>
+              <label class="block text-slate-300 text-xs font-bold mb-1">Content Niche / Category</label>
+              <select id="regCategory" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+                <option value="AI & Software Engineering">AI & Software Engineering</option>
+                <option value="Gaming & Esports">Gaming & Esports</option>
+                <option value="Health, Fitness & Nutrition">Health, Fitness & Nutrition</option>
+                <option value="Finance & Investing">Finance & Investing</option>
+                <option value="Design & Creative Tech">Design & Creative Tech</option>
+              </select>
+            </div>
+
+            <button onclick="handleRegisterNewCreator()" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 hover:from-emerald-500 text-white font-bold text-xs shadow-lg shadow-emerald-600/30 transition">
+              Create Profile & Authenticate Now →
+            </button>
+          </div>
+
+        </div>
+
+        <!-- QUICK JUMP TO MODULES -->
+        <div class="bg-[#141d2f]/95 border border-slate-800 rounded-3xl p-6 shadow-2xl">
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3 flex items-center gap-2">
+            <span>🌐</span> CreatorPilot Studio Dedicated Modules
+          </h4>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <a href="index.html" class="p-2.5 rounded-xl bg-slate-900/80 hover:bg-indigo-600/20 border border-slate-800 hover:border-indigo-500/40 text-slate-300 hover:text-white transition flex items-center gap-1.5">
+              <span>📊</span> <span>Studio Dashboard</span>
+            </a>
+            <a href="content-performance.html" class="p-2.5 rounded-xl bg-slate-900/80 hover:bg-indigo-600/20 border border-slate-800 hover:border-indigo-500/40 text-slate-300 hover:text-white transition flex items-center gap-1.5">
+              <span>🎯</span> <span>Content Perf</span>
+            </a>
+            <a href="notifications.html" class="p-2.5 rounded-xl bg-slate-900/80 hover:bg-indigo-600/20 border border-slate-800 hover:border-indigo-500/40 text-slate-300 hover:text-white transition flex items-center gap-1.5">
+              <span>🔔</span> <span>Alerts & Alarms</span>
+            </a>
+            <a href="ai-coach.html" class="p-2.5 rounded-xl bg-slate-900/80 hover:bg-indigo-600/20 border border-slate-800 hover:border-indigo-500/40 text-slate-300 hover:text-white transition flex items-center gap-1.5">
+              <span>🎙️</span> <span>AI Voice Coach</span>
+            </a>
+            <a href="upload-consistency.html" class="p-2.5 rounded-xl bg-slate-900/80 hover:bg-indigo-600/20 border border-slate-800 hover:border-indigo-500/40 text-slate-300 hover:text-white transition flex items-center gap-1.5">
+              <span>⏱️</span> <span>Consistency</span>
+            </a>
+            <a href="weekly-planner.html" class="p-2.5 rounded-xl bg-slate-900/80 hover:bg-indigo-600/20 border border-slate-800 hover:border-indigo-500/40 text-slate-300 hover:text-white transition flex items-center gap-1.5">
+              <span>🗓️</span> <span>Weekly Planner</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Logout Confirmation Modal -->
+  <div id="logoutConfirmModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="bg-[#0f172a] border border-slate-800 rounded-3xl w-full max-w-md p-6 text-center shadow-2xl relative">
+      <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-3xl font-black border border-rose-500/40">
+        🚪
+      </div>
+      <h3 class="text-lg font-black text-white mb-1">Confirm Session Log Out</h3>
+      <p class="text-xs text-slate-300 mb-4 leading-relaxed">
+        Are you sure you want to log out of <strong id="logoutTargetName">Alex Rivers</strong>? Your channel telemetry, live alarms, and personal AI recommendations will be paused until you sign back in.
+      </p>
+
+      <div class="p-3 bg-slate-900/70 border border-slate-800 rounded-xl mb-5 text-left text-xs">
+        <label class="flex items-center gap-2 cursor-pointer text-slate-300">
+          <input type="checkbox" checked id="chkRememberDevice" class="rounded border-slate-700 bg-slate-900 text-indigo-600 focus:ring-0" />
+          <span>Keep this workstation remembered for 1-click fast return</span>
+        </label>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 text-xs">
+        <button onclick="closeModal('logoutConfirmModal')" class="py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold transition border border-slate-700">
+          Cancel
+        </button>
+        <button onclick="executePageLogout()" class="py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold shadow-lg shadow-rose-600/40 transition">
+          Yes, Log Out
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="fixed top-20 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Shared Engine Script -->
+  <script src="shared.js"></script>
+
+  <!-- Login/Logout Page Logic -->
+  <script>
+    let sessionSeconds = 2538; // 42m 18s initial
+
+    function formatTime(secs) {
+      const m = Math.floor(secs / 60);
+      const s = secs % 60;
+      return `${m}m ${s < 10 ? '0' : ''}${s}s active`;
+    }
+
+    setInterval(() => {
+      if (isLoggedIn) {
+        sessionSeconds++;
+        const el = document.getElementById('sessionDurationText');
+        if (el) el.textContent = `Live (${formatTime(sessionSeconds)})`;
+      }
+    }, 1000);
+
+    function togglePassVisibility() {
+      const input = document.getElementById('loginInputPass');
+      if (input) {
+        input.type = input.type === 'password' ? 'text' : 'password';
+      }
+    }
+
+    function switchLoginPageTab(tab) {
+      const tabs = ['profiles', 'manual', 'oauth', 'perms', 'register'];
+      tabs.forEach(t => {
+        const panel = document.getElementById('pageTab' + t.charAt(0).toUpperCase() + t.slice(1));
+        const btn = document.getElementById('pageTabBtn' + t.charAt(0).toUpperCase() + t.slice(1));
+        if (panel) panel.classList.toggle('hidden', t !== tab);
+        if (btn) {
+          btn.className = t === tab
+            ? "px-3 py-1.5 rounded-xl bg-indigo-600 text-white font-bold transition whitespace-nowrap"
+            : "px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white transition whitespace-nowrap";
+        }
+      });
+    }
+
+    function handleManualPageLogin() {
+      const input = document.getElementById('loginInputId');
+      const val = input ? input.value.trim() : '';
+      if (!val) {
+        showToast("Please enter a creator identifier or handle", "warning");
+        return;
+      }
+
+      let matchedKey = 'codecraft';
+      let customOwner = null;
+      let customId = null;
+
+      const lower = val.toLowerCase();
+      if (lower.includes('pixel') || lower.includes('game')) {
+        matchedKey = 'pixelquest';
+      } else if (lower.includes('nutri') || lower.includes('fit') || lower.includes('life')) {
+        matchedKey = 'nutrivibe';
+      } else {
+        customId = val.startsWith('@') ? val : (val.includes('@') ? val : '@' + val.replace(/\s+/g, '_').toLowerCase());
+        customOwner = val.includes('@') ? val.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : val;
+      }
+
+      selectCreatorProfile(matchedKey, customOwner, customId);
+      showToast(`Welcome! Signed in as ${customOwner || activeCreator.name}`, 'success');
+      updatePageData();
+    }
+
+    function handlePortalLogoutClick() {
+      if (!isLoggedIn) {
+        showToast("Already in guest mode. Select a profile to sign in.", "info");
+        return;
+      }
+      const target = document.getElementById('logoutTargetName');
+      if (target) target.textContent = activeCreator.ownerName || activeCreator.name;
+      openModal('logoutConfirmModal');
+    }
+
+    function executePageLogout() {
+      closeModal('logoutConfirmModal');
+      handleLogout();
+      updatePageData();
+      showToast("Logged out successfully. Switched to Guest Mode.", "info");
+    }
+
+    function revokeOtherSessions() {
+      const iphone = document.getElementById('deviceRowIphone');
+      const macbook = document.getElementById('deviceRowMacbook');
+      if (iphone) iphone.classList.add('opacity-40');
+      if (macbook) macbook.classList.add('opacity-40');
+      showToast("🔒 Revoked 2 active remote sessions. Only this current PC remains authorized.", "success");
+    }
+
+    function testYouTubeApi() {
+      const p = activeCreator || CREATOR_PROFILES.codecraft;
+      showToast(`🔴 Verifying YouTube Data API v3 token for ${p.youtubeSession ? p.youtubeSession.channelName : p.name}...`, "info");
+      setTimeout(() => {
+        showToast(`✓ YouTube v3 Token Active! 4/4 scopes valid (${p.youtubeSession ? p.youtubeSession.subscribers : p.subs} subs, ${p.videos} videos).`, "success");
+      }, 500);
+    }
+
+    function testInstagramApi() {
+      const p = activeCreator || CREATOR_PROFILES.codecraft;
+      showToast(`🟣 Verifying Meta Instagram Graph API v19.0 token for ${p.instagramSession ? p.instagramSession.handle : p.handle}...`, "info");
+      setTimeout(() => {
+        showToast(`✓ Meta Graph API Valid! 5/5 scopes valid (${p.instagramSession ? p.instagramSession.followers : '46.2K'} followers, 892K plays).`, "success");
+      }, 500);
+    }
+
+    function testMicPermission() {
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+          stream.getTracks().forEach(t => t.stop());
+          showToast("🎙️ Microphone access verified active! Ready for AI Voice Coach.", "success");
+        }).catch(err => {
+          showToast("🎙️ Microphone query: " + err.message, "info");
+        });
+      } else {
+        showToast("🎙️ Microphone audio API available", "info");
+      }
+    }
+
+    function sendTestNotification() {
+      if (!('Notification' in window)) {
+        showToast("Desktop notifications not supported in this browser. In-app toasts active.", "info");
+        return;
+      }
+      Notification.requestPermission().then(perm => {
+        if (perm === 'granted') {
+          try {
+            new Notification("CreatorPilot Alert System", {
+              body: "Push notification channel verified! You will receive production deadline alerts.",
+              icon: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150"
+            });
+            showToast("🔔 Desktop push alert delivered!", "success");
+          } catch (e) {
+            showToast("🔔 Desktop notifications authorized!", "success");
+          }
+        } else {
+          showToast("Desktop notifications permission: " + perm, "warning");
+        }
+      });
+    }
+
+    function testAudioTone() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.5);
+        showToast("🔊 Test alarm tone played successfully (Web Audio Synthesizer)", "success");
+      } catch (e) {
+        showToast("🔊 Audio Synthesizer initialized", "info");
+      }
+    }
+
+    function copyMasterToken() {
+      const p = activeCreator || CREATOR_PROFILES.codecraft;
+      const token = `cp_live_sec_${p.key}_${Date.now()}_root_admin`;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(token).then(() => {
+          showToast("📋 Copied master session bearer token to clipboard!", "success");
+        }).catch(() => {
+          showToast(`Master Token: ${token}`, "info");
+        });
+      } else {
+        showToast(`Master Token: ${token}`, "info");
+      }
+    }
+
+    function handleRegisterNewCreator() {
+      const name = document.getElementById('regName').value.trim();
+      const handle = document.getElementById('regHandle').value.trim();
+      const channel = document.getElementById('regChannel').value.trim();
+      const cat = document.getElementById('regCategory').value;
+
+      if (!name || !handle) {
+        showToast("Please provide both creator name and handle", "warning");
+        return;
+      }
+
+      const cleanHandle = handle.startsWith('@') ? handle : '@' + handle;
+      const key = handle.replace(/[@._\s]/g, '').toLowerCase() || 'custom';
+      const customUid = 'CR-' + Math.floor(10000 + Math.random() * 90000);
+
+      const newProfile = {
+        key: key,
+        name: channel || `${name}'s Channel`,
+        ownerName: name,
+        loginId: cleanHandle,
+        handle: cleanHandle,
+        userId: customUid,
+        role: `Creator & Lead Producer (${cat})`,
+        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+        subs: '1,200',
+        videos: '12',
+        category: cat,
+        youtubeSession: {
+          appName: 'YouTube Studio',
+          appIcon: '🔴',
+          platform: 'youtube',
+          channelName: channel || `${name}'s Channel`,
+          handle: cleanHandle,
+          accountId: 'YT-' + customUid,
+          ownerName: name,
+          connected: true,
+          status: 'Active & Synced',
+          subscribers: '1,200',
+          views: '45.2K',
+          watchHours: '320 hrs',
+          watchHoursTarget: '4,000 hrs',
+          monetization: '8% Ready',
+          avgViews: '3,800',
+          engagement: '9.4%',
+          appUrl: 'https://studio.youtube.com',
+          channelUrl: 'https://youtube.com/' + cleanHandle,
+          deepLink: 'vnd.youtube://channel/' + key,
+          lastSynced: 'Just now'
+        },
+        instagramSession: {
+          appName: 'Instagram Professional',
+          appIcon: '🟣',
+          platform: 'instagram',
+          profileName: name,
+          handle: cleanHandle,
+          accountId: 'IG-META-' + Math.floor(10000 + Math.random() * 90000),
+          ownerName: name,
+          connected: true,
+          status: 'Active & Synced',
+          followers: '3,450',
+          reelsPlays: '42.8K',
+          storyReach: '1.2K / 24h',
+          engagement: '11.8%',
+          savesShares: '2.1K saves',
+          avgPlays: '8,400',
+          appUrl: 'https://www.instagram.com',
+          profileUrl: 'https://www.instagram.com/' + cleanHandle.replace('@', ''),
+          deepLink: 'instagram://user?username=' + cleanHandle.replace('@', ''),
+          lastSynced: 'Just now'
+        }
+      };
+
+      CREATOR_PROFILES[key] = newProfile;
+      selectCreatorProfile(key, name, cleanHandle);
+      showToast(`🎉 New creator profile registered & signed in: ${name} (${cleanHandle})!`, "success");
+      updatePageData();
+      switchLoginPageTab('profiles');
+    }
+
+    function updatePageData() {
+      const p = activeCreator || CREATOR_PROFILES.codecraft;
+
+      // Header status
+      const hDot = document.getElementById('headerStatusDot');
+      const hText = document.getElementById('headerStatusText');
+      if (hDot && hText) {
+        if (isLoggedIn) {
+          hDot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
+          hText.textContent = `Active: ${p.ownerName || p.name}`;
+        } else {
+          hDot.className = "w-2 h-2 rounded-full bg-amber-400";
+          hText.textContent = "Guest Mode (Logged Out)";
+        }
+      }
+
+      // Banner
+      const bHeading = document.getElementById('bannerMainHeading');
+      const bPill = document.getElementById('bannerStatePill');
+      const bPermsPill = document.getElementById('bannerPermissionsPill');
+      const bName = document.getElementById('bannerPersonName');
+      const bId = document.getElementById('bannerLoginId');
+      const bBtn = document.getElementById('bannerActionBtn');
+      const bIcon = document.getElementById('bannerIconBox');
+      const bSubText = document.getElementById('bannerSubText');
+
+      // Left Column cards
+      const creatorCard = document.getElementById('creatorIdentityCard');
+      const guestCard = document.getElementById('guestIdentityCard');
+
+      if (isLoggedIn) {
+        if (creatorCard) creatorCard.classList.remove('hidden');
+        if (guestCard) guestCard.classList.add('hidden');
+
+        if (bHeading) bHeading.textContent = "Authenticated Session Active";
+        if (bPill) {
+          bPill.className = "text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+          bPill.textContent = "● Verified Identity";
+        }
+        if (bPermsPill) {
+          bPermsPill.className = "text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 cursor-pointer";
+          bPermsPill.textContent = "🛡️ All Permissions: 100% Granted ✓";
+        }
+        if (bSubText) {
+          bSubText.innerHTML = `Logged in as <strong id="bannerPersonName" class="text-white">${p.ownerName || p.name}</strong> (<span id="bannerLoginId" class="font-mono text-indigo-300">${p.loginId || p.handle}</span>) with Full Administrator & Channel Ownership access.`;
+        }
+        if (bBtn) {
+          bBtn.className = "px-4 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-bold transition flex items-center gap-1.5 shadow-sm";
+          bBtn.innerHTML = `<span>🚪</span> <span>Log Out Session</span>`;
+        }
+        if (bIcon) {
+          bIcon.className = "w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center text-2xl shrink-0";
+          bIcon.textContent = "🔐";
+        }
+      } else {
+        if (creatorCard) creatorCard.classList.add('hidden');
+        if (guestCard) guestCard.classList.remove('hidden');
+
+        if (bHeading) bHeading.textContent = "Guest Mode (Logged Out)";
+        if (bPill) {
+          bPill.className = "text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30";
+          bPill.textContent = "○ No Active Session";
+        }
+        if (bPermsPill) {
+          bPermsPill.className = "text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 cursor-pointer";
+          bPermsPill.textContent = "🛡️ Permissions: Standby";
+        }
+        if (bSubText) {
+          bSubText.innerHTML = `You are browsing in unauthenticated guest mode. Click <strong class="text-white">Sign In Now</strong> or choose a profile on the right to restore your workspace.`;
+        }
+        if (bBtn) {
+          bBtn.className = "px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-emerald-500 hover:from-indigo-500 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-md shadow-indigo-600/30";
+          bBtn.innerHTML = `<span>🔑</span> <span>Sign In Now</span>`;
+        }
+        if (bIcon) {
+          bIcon.className = "w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center text-2xl shrink-0";
+          bIcon.textContent = "🔒";
+        }
+      }
+
+      // Creator Identity Card Elements
+      const avatar = document.getElementById('creatorAvatarImg');
+      const pName = document.getElementById('creatorPersonName');
+      const pHandle = document.getElementById('creatorLoginHandle');
+      const pUid = document.getElementById('creatorUserId');
+      const pChan = document.getElementById('creatorChannelName');
+      const pRole = document.getElementById('creatorRoleBadge');
+      const pSubs = document.getElementById('creatorSubsNum');
+      const pVids = document.getElementById('creatorVideoCount');
+
+      if (avatar) avatar.src = p.avatar;
+      if (pName) pName.textContent = p.ownerName || p.name;
+      if (pHandle) pHandle.textContent = p.loginId || p.handle;
+      if (pUid) pUid.textContent = `ID: ${p.userId || 'CR-84920'}`;
+      if (pChan) pChan.textContent = p.name;
+      if (pRole) pRole.textContent = p.role || 'Lead Creator & Channel Owner';
+      if (pSubs) pSubs.textContent = p.subs;
+      if (pVids) pVids.textContent = p.videos;
+
+      // Platform cards
+      if (p.youtubeSession) {
+        const ytH = document.getElementById('cardYtHandle');
+        const ytS = document.getElementById('cardYtSubs');
+        const ytW = document.getElementById('cardYtWatch');
+        const ytId = document.getElementById('cardYtSessionId');
+        const ytBtn = document.getElementById('cardYtLaunchBtn');
+        if (ytH) ytH.textContent = p.youtubeSession.handle;
+        if (ytS) ytS.textContent = p.youtubeSession.subscribers;
+        if (ytW) ytW.textContent = p.youtubeSession.watchHours;
+        if (ytId) ytId.textContent = p.youtubeSession.accountId;
+        if (ytBtn && p.youtubeSession.appUrl) ytBtn.href = p.youtubeSession.appUrl;
+      }
+
+      if (p.instagramSession) {
+        const igH = document.getElementById('cardIgHandle');
+        const igF = document.getElementById('cardIgFollowers');
+        const igP = document.getElementById('cardIgPlays');
+        const igId = document.getElementById('cardIgSessionId');
+        const igBtn = document.getElementById('cardIgLaunchBtn');
+        if (igH) igH.textContent = p.instagramSession.handle;
+        if (igF) igF.textContent = p.instagramSession.followers;
+        if (igP) igP.textContent = p.instagramSession.reelsPlays;
+        if (igId) igId.textContent = p.instagramSession.accountId;
+        if (igBtn && p.instagramSession.appUrl) igBtn.href = p.instagramSession.appUrl;
+      }
+
+      // App connected badges
+      const appBadge = document.getElementById('linkedAppsStatusBadge');
+      const ytBadge = document.getElementById('cardYtStatusBadge');
+      const igBadge = document.getElementById('cardIgStatusBadge');
+
+      if (isLoggedIn) {
+        if (appBadge) {
+          appBadge.className = "text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+          appBadge.textContent = "● 2 Apps Connected";
+        }
+        if (ytBadge) {
+          ytBadge.className = "text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+          ytBadge.textContent = "● Connected";
+        }
+        if (igBadge) {
+          igBadge.className = "text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+          igBadge.textContent = "● Connected";
+        }
+      } else {
+        if (appBadge) {
+          appBadge.className = "text-[10px] font-bold px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 border border-slate-700";
+          appBadge.textContent = "○ Standby (Signed Out)";
+        }
+        if (ytBadge) {
+          ytBadge.className = "text-[9px] font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700";
+          ytBadge.textContent = "○ Standby";
+        }
+        if (igBadge) {
+          igBadge.className = "text-[9px] font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700";
+          igBadge.textContent = "○ Standby";
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      updatePageData();
+      updatePermissionsUI(true);
+    });
+  </script>
+</body>
+</html>

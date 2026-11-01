@@ -33,7 +33,10 @@ const server = http.createServer((req, res) => {
     cleanUrl = 'index.html';
   }
 
-  const filePath = path.join(ROOT, cleanUrl);
+  let filePath = path.join(ROOT, cleanUrl);
+  if (!path.extname(filePath) && fs.existsSync(filePath + '.html')) {
+    filePath = filePath + '.html';
+  }
 
   fs.stat(filePath, (err, stats) => {
     if (err || !stats.isFile()) {

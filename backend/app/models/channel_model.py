@@ -50,3 +50,21 @@ class NotificationAlert(BaseModel):
     message: str
     urgency: str # 'high', 'medium', 'info'
     timestamp: str
+
+class SentimentCommentItem(BaseModel):
+    author: str
+    text: str
+    likes: int
+    classification: str # 'Positive', 'Neutral', 'Critical'
+    score: float
+
+class SentimentSummary(BaseModel):
+    total_comments_analyzed: int
+    positive_pct: float
+    neutral_pct: float
+    critical_pct: float
+    overall_sentiment_score: float
+    top_positive_keywords: List[str]
+    top_constructive_keywords: List[str]
+    sample_comments: List[SentimentCommentItem]
+

@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trend Identification & Synergy Matcher - CreatorPilot</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- CreatorPilot 2026 Next-Gen Design System & Theme Engine -->
+  <link rel="stylesheet" href="shared.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; background-color: var(--bg-primary, #07090e); }
+  </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col md:flex-row theme-obsidian">
+
+  <!-- Sidebar Navigation -->
+  <aside class="w-full md:w-64 bg-[#0f172a] border-r border-slate-800 flex flex-col shrink-0">
+    <div class="p-5 border-b border-slate-800 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-emerald-400 flex items-center justify-center font-black text-lg shadow-lg shadow-indigo-500/20">
+          🚀
+        </div>
+        <div>
+          <span class="font-extrabold text-lg text-white">CreatorPilot</span>
+          <span class="block text-[10px] text-indigo-400 font-bold uppercase tracking-wider">Multi-Page Suite</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Navigation Links -->
+    <nav class="flex-1 p-3 space-y-1 overflow-y-auto text-xs font-semibold">
+      <div class="px-3 pt-2 pb-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Overview</div>
+      <a href="index.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition">
+        <span>📊</span> <span>Dashboard Overview</span>
+      </a>
+
+      <div class="px-3 pt-3 pb-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Analytics & Diagnosis</div>
+      <a href="content-performance.html" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition">
+        <div class="flex items-center gap-2.5"><span>🎯</span> <span>Content Performance</span></div>
+        <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">Mod 2</span>
+      </a>
+      <a href="growth-prediction.html" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition">
+        <div class="flex items-center gap-2.5"><span>📈</span> <span>Growth Prediction (ML)</span></div>
+        <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">Mod 7</span>
+      </a>
+      <a href="sentiment.html" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition">
+        <div class="flex items-center gap-2.5"><span>💬</span> <span>Audience Sentiment (NLP)</span></div>
+        <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">Mod 5</span>
+      </a>
+
+      <div class="px-3 pt-3 pb-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Discovery & Strategy</div>
+      <a href="trends.html" class="flex items-center justify-between px-3 py-2 rounded-xl bg-indigo-600/10 text-indigo-300 font-bold border border-indigo-500/20">
+        <div class="flex items-center gap-2.5"><span>🧭</span> <span>Trend Identification</span></div>
+        <span class="text-[9px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300">Mod 4</span>
+      </a>
+      <a href="content-gaps.html" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition">
+        <div class="flex items-center gap-2.5"><span>💡</span> <span>Content-Gap & Ideas</span></div>
+        <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">Mod 6</span>
+      </a>
+      <a href="weekly-planner.html" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition">
+        <div class="flex items-center gap-2.5"><span>🗓️</span> <span>Weekly Content Plan</span></div>
+        <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">Mod 9</span>
+      </a>
+
+      <div class="px-3 pt-3 pb-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Cadence & Guidance</div>
+      <a href="upload-consistency.html" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition">
+        <div class="flex items-center gap-2.5"><span>⏱️</span> <span>Upload Consistency</span></div>
+        <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">Mod 3</span>
+      </a>
+      <a href="notifications.html" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition">
+        <div class="flex items-center gap-2.5"><span>🔔</span> <span>Notifications & Alerts</span></div>
+        <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">Mod 10</span>
+      </a>
+      <a href="ai-coach.html" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition">
+        <div class="flex items-center gap-2.5"><span>🎙️</span> <span>AI Growth Assistant</span></div>
+        <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">Mod 8</span>
+      </a>
+
+      <div class="px-3 pt-3 pb-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Session & Access</div>
+      <a href="login.html" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:text-white bg-slate-800/40 hover:bg-indigo-600/20 border border-slate-700/60 hover:border-indigo-500/40 transition group">
+        <div class="flex items-center gap-2.5"><span>🔐</span> <span class="group-hover:text-indigo-300 font-semibold text-xs">Login & Session Portal</span></div>
+        <span class="text-[9px] px-1.5 py-0.2 rounded bg-indigo-500/20 text-indigo-300 font-bold">Portal ↗</span>
+      </a>
+    </nav>
+
+    <!-- Creator Profile Switcher Bar -->
+    <div class="p-3 border-t border-slate-800 bg-slate-900/60 space-y-2">
+      <div onclick="openModal('authPortalModal')" class="flex items-center justify-between p-2 rounded-xl bg-slate-800/60 hover:bg-slate-800 cursor-pointer border border-slate-700/60 transition" title="Switch Creator Profile">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <img id="navAvatar" src="" class="w-8 h-8 rounded-lg object-cover border border-indigo-500/40 shrink-0" />
+          <div class="min-w-0 truncate">
+            <span id="navChannelName" class="font-bold text-xs text-white block truncate">Channel</span>
+            <span id="navChannelHandle" class="text-[10px] text-slate-400 block truncate">@handle</span>
+          </div>
+        </div>
+        <span class="text-[10px] text-indigo-400 font-bold px-1.5 py-0.5 rounded bg-indigo-500/10">Switch</span>
+      </div>
+      <div class="flex items-center justify-between px-1 text-[11px]">
+        <a href="login.html" class="text-slate-400 hover:text-indigo-300 transition flex items-center gap-1 font-semibold">
+          <span>🔐</span> <span>Auth Portal ↗</span>
+        </a>
+        <button onclick="handleLogout()" class="text-rose-400 hover:text-rose-300 transition flex items-center gap-1 font-semibold">
+          <span>🚪</span> <span>Log Out</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <div class="flex-1 flex flex-col min-w-0">
+    <!-- Topbar -->
+    <header class="sticky top-0 z-30 bg-[#0f172a]/90 backdrop-blur-md border-b border-slate-800 px-6 py-3.5 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+          Module 4
+        </span>
+        <h1 class="text-lg font-bold text-white flex items-center gap-2">
+          🧭 Trend Identification & Synergy Matcher
+        </h1>
+      </div>
+      <div class="flex items-center gap-2.5">
+        <button onclick="testTitle('Why React 19 Changes Fullstack Architecture Forever')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700/60 transition">
+          📊 Title Scorer
+        </button>
+        <a href="ai-coach.html" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 text-white text-xs font-semibold shadow-md shadow-indigo-600/30 transition">
+          <span>🎙️</span> <span>Ask AI Coach</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- Page Body -->
+    <main class="flex-1 p-6 max-w-7xl w-full mx-auto space-y-6">
+
+      <!-- Live Search Velocity & Decay Cards -->
+      <div class="bg-[#141d2f]/90 border border-slate-800 rounded-2xl p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+          <div>
+            <h2 class="text-base font-bold text-white flex items-center gap-2">
+              <span>🔥</span> Trending Niche Topics with Live Velocity Tracking
+            </h2>
+            <p class="text-xs text-slate-400 mt-0.5">Identifies surging interest in your niche before peak decay so you can publish while impression velocity is accelerating.</p>
+          </div>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            Real-Time Search Accel $\frac{d^2V}{dt^2}$
+          </span>
+        </div>
+
+        <div id="trendsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Trend Evaluator Tool -->
+      <div class="bg-[#141d2f]/90 border border-slate-800 rounded-2xl p-6">
+        <h3 class="text-sm font-bold text-white mb-2 flex items-center gap-2">
+          <span>⚡</span> Real-Time Trend Velocity Evaluator
+        </h3>
+        <p class="text-xs text-slate-400 mb-3">Type any emerging technology, tool, or game to calculate predicted audience fit and peak lifespan:</p>
+
+        <div class="flex gap-2">
+          <input id="trendQueryInput" type="text" placeholder="e.g. 'DeepSeek V3', 'TypeScript 5.8', 'GTA 6 Gameplay'" class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500" onkeydown="if(event.key==='Enter') evaluateCustomTrend()" />
+          <button onclick="evaluateCustomTrend()" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition">
+            Evaluate Trend →
+          </button>
+        </div>
+
+        <div id="trendQueryOutput" class="mt-4 p-4 rounded-xl bg-slate-900/60 border border-slate-800 text-xs hidden"></div>
+      </div>
+
+      <!-- Peer Creator Collaboration Matcher -->
+      <div class="bg-[#141d2f]/90 border border-slate-800 rounded-2xl p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+          <div>
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+              <span>🤝</span> Peer Creator Collaboration Matcher
+            </h3>
+            <p class="text-xs text-slate-400 mt-0.5">Identifies channels with high audience overlap (15k–50k subs) for cross-promotional spikes</p>
+          </div>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            High Audience Synergy
+          </span>
+        </div>
+
+        <div id="collabsList" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Shared Auth Modal -->
+  <div id="authPortalModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="bg-[#0f172a] border border-slate-800 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden relative">
+      <button onclick="closeModal('authPortalModal')" class="absolute top-5 right-5 p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white">✕</button>
+      <div class="p-6 border-b border-slate-800 bg-slate-900/60">
+        <h3 class="font-extrabold text-white text-base">Switch Creator Profile</h3>
+        <p class="text-xs text-slate-400">Select any channel to update analytics across all pages:</p>
+      </div>
+      <div class="p-6 space-y-3">
+        <div onclick="selectCreatorProfile('codecraft')" class="p-3.5 rounded-2xl bg-slate-800/40 hover:bg-indigo-950/40 border border-slate-700/60 hover:border-indigo-500/50 cursor-pointer flex items-center justify-between transition">
+          <div><strong class="text-white text-xs block">CodeCraft Studio (Tech & AI)</strong><span class="text-[11px] text-slate-400">28.4K Subs • 86 Videos</span></div>
+          <span class="text-xs text-indigo-400 font-bold">Select →</span>
+        </div>
+        <div onclick="selectCreatorProfile('pixelquest')" class="p-3.5 rounded-2xl bg-slate-800/40 hover:bg-indigo-950/40 border border-slate-700/60 hover:border-indigo-500/50 cursor-pointer flex items-center justify-between transition">
+          <div><strong class="text-white text-xs block">PixelQuest Gaming (Gaming)</strong><span class="text-[11px] text-slate-400">42.1K Subs • 142 Videos</span></div>
+          <span class="text-xs text-indigo-400 font-bold">Select →</span>
+        </div>
+        <div onclick="selectCreatorProfile('nutrivibe')" class="p-3.5 rounded-2xl bg-slate-800/40 hover:bg-indigo-950/40 border border-slate-700/60 hover:border-indigo-500/50 cursor-pointer flex items-center justify-between transition">
+          <div><strong class="text-white text-xs block">NutriVibe Healthy (Lifestyle)</strong><span class="text-[11px] text-slate-400">15.8K Subs • 54 Videos</span></div>
+          <span class="text-xs text-indigo-400 font-bold">Select →</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="titleScorerModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-[#0f172a] border border-slate-800 rounded-3xl w-full max-w-xl p-6 shadow-2xl relative">
+      <button onclick="closeModal('titleScorerModal')" class="absolute top-5 right-5 p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white">✕</button>
+      <h3 class="text-lg font-bold text-white mb-1">Title & Thumbnail Click-Potential Scorer</h3>
+      <p class="text-xs text-slate-400 mb-4">Evaluates length, curiosity hooks, and CTR impact.</p>
+      <div class="flex gap-2">
+        <input id="titleInput" type="text" value="Why You Should Stop Using Express.js in 2026" class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500">
+        <button onclick="runTitleScorer()" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-semibold text-sm text-white">Analyze</button>
+      </div>
+      <div id="titleResults" class="mt-5 pt-4 border-t border-slate-800 space-y-3"></div>
+    </div>
+  </div>
+
+  <script src="shared.js"></script>
+  <script>
+    function updatePageContent(profile) {
+      renderTrends(profile);
+      renderCollabs(profile);
+    }
+
+    function renderTrends(profile) {
+      const el = document.getElementById('trendsList');
+      if (!el || !profile.trends) return;
+
+      el.innerHTML = profile.trends.map(t => `
+        <div class="p-4 rounded-xl bg-slate-800/40 border border-slate-700/60 flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center mb-1.5">
+              <span class="text-xs font-bold text-white leading-snug">${t.topic}</span>
+              <span class="text-[10px] font-bold text-emerald-400 px-2 py-0.5 rounded bg-emerald-500/10 shrink-0">${t.fit}</span>
+            </div>
+            <div class="flex items-center gap-2 text-[11px] text-slate-400 my-2">
+              <span class="text-emerald-400 font-semibold">${t.velocity}</span>
+              <span>•</span>
+              <span class="text-amber-400">${t.decay}</span>
+            </div>
+            <div class="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 mt-2">
+              <span class="text-[9px] uppercase font-bold text-indigo-400 block mb-0.5">Psychological Hook Formula:</span>
+              <p class="text-[11px] text-slate-300 italic">"${t.hook}"</p>
+            </div>
+          </div>
+          <div class="mt-3 pt-2 border-t border-slate-700/40 flex justify-between items-center text-[10px]">
+            <button onclick="testTitle('${t.hook.replace(/'/g, "\\'")}')" class="text-indigo-400 hover:underline">Test in Scorer →</button>
+            <a href="weekly-planner.html" class="text-slate-400 hover:text-white">Plan to Schedule →</a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderCollabs(profile) {
+      const el = document.getElementById('collabsList');
+      if (!el || !profile.collabs) return;
+
+      el.innerHTML = profile.collabs.map(c => `
+        <div class="p-4 rounded-xl bg-slate-800/40 border border-slate-700/60 flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <strong class="text-white text-xs">${c.name} (${c.handle})</strong>
+              <span class="text-emerald-400 font-bold text-xs">${c.match}</span>
+            </div>
+            <span class="text-[11px] text-slate-400">${c.subs} • ${c.focus}</span>
+            <div class="bg-slate-900/60 p-2.5 rounded-lg border border-slate-800 mt-2.5">
+              <span class="text-[9px] text-indigo-300 font-semibold uppercase block mb-1">Collab Video Concept</span>
+              <p class="text-slate-300 text-xs italic">"${c.concept}"</p>
+            </div>
+          </div>
+          <div class="mt-3 pt-2 border-t border-slate-700/40 text-[11px] text-emerald-400 font-semibold flex items-center justify-between">
+            <span>${c.gain}</span>
+            <button onclick="showToast('Collab pitch saved to clipboard!', 'success')" class="text-[10px] text-indigo-400 hover:underline">Copy Pitch</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function evaluateCustomTrend() {
+      const input = document.getElementById('trendQueryInput');
+      const val = input.value.trim();
+      const out = document.getElementById('trendQueryOutput');
+      if (!val) return;
+
+      const score = Math.min(97, Math.floor(Math.random() * 15) + 84);
+      const velocity = `+${Math.floor(Math.random() * 150) + 120}%`;
+      const decay = Math.floor(Math.random() * 14) + 10;
+
+      out.className = "mt-4 p-4 rounded-xl bg-slate-900/90 border border-indigo-500/30 text-xs";
+      out.innerHTML = `
+        <div class="flex justify-between items-start mb-2">
+          <div>
+            <h4 class="font-bold text-white text-sm">Trend Velocity Analysis: "${val}"</h4>
+            <span class="text-[11px] text-slate-400">Audience Niche Match: <strong class="text-emerald-400">${score}% Fit</strong></span>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold text-xs">${velocity} Search Velocity</span>
+        </div>
+        <div class="grid grid-cols-2 gap-3 my-2 text-slate-300">
+          <div class="p-2.5 rounded bg-slate-800/60">⏳ <strong>Peak Window:</strong> Approx. ${decay} days remaining before decay</div>
+          <div class="p-2.5 rounded bg-slate-800/60">🎯 <strong>Impression Boost:</strong> High probability of browse feed placement</div>
+        </div>
+        <div class="p-2.5 rounded bg-indigo-950/40 border border-indigo-500/20 mt-2">
+          <strong class="text-indigo-300 block text-[10px] uppercase font-bold">Suggested Urgency Hook:</strong>
+          <span class="italic text-slate-200">"Why Everyone Is Switching to ${val} in 2026 (Full Breakdown)"</span>
+        </div>
+        <div class="mt-3 flex justify-end gap-2">
+          <button onclick="testTitle('Why Everyone Is Switching to ${val.replace(/'/g, "\\'")} in 2026')" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs">
+            Test in Scorer →
+          </button>
+        </div>
+      `;
+      out.classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>

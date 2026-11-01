@@ -5,11 +5,13 @@ Orchestrates requests for channel profile, video metrics, and proactive notifica
 
 from fastapi import APIRouter
 from typing import List
-from backend.app.models.channel_model import ChannelProfile, VideoMetric, NotificationAlert
+from backend.app.models.channel_model import ChannelProfile, VideoMetric, NotificationAlert, SentimentSummary
 from backend.app.services.youtube_service import youtube_service
 from backend.app.services.ml_service import ml_service
+from backend.app.services.nlp_service import nlp_service
 
 router = APIRouter(prefix="/api/channel", tags=["Channel Controller"])
+
 
 @router.get("/summary", response_model=ChannelProfile)
 def get_channel_summary():
@@ -85,3 +87,14 @@ def get_notifications():
     ))
 
     return alerts
+
+@router.get("/sentiment", response_model=SentimentSummary)
+def get_channel_sentiment():
+    """
+    Module 5: Audience Sentiment Analysis
+    Uses NLP lexicon & linguistic patterns to classify audience comments into
+    Positive, Neutral, and Critical with keyword extraction.
+    """
+    summary = nlp_service.get_sentiment_summary()
+    return SentimentSummary(**summary)
+

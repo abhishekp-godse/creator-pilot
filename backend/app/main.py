@@ -47,6 +47,7 @@ def root():
         "docs": "/docs",
         "endpoints": [
             "/api/channel/summary",
+            "/api/channel/sentiment",
             "/api/ml/growth-forecast",
             "/api/ml/score-title",
             "/api/growth/content-gaps",
