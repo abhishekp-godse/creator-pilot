@@ -1248,6 +1248,57 @@ function speakText(txt) {
 const GeminiGrowthEngine = {
   history: [],
   turnCount: 0,
+  activeMode: localStorage.getItem('creatorpilot_ai_mode') || 'strategist',
+  modeConfig: {
+    strategist: {
+      name: 'Executive Strategist',
+      icon: '🧠',
+      badge: 'Algorithm Architecture & Monetization',
+      description: 'Specialized in multi-platform algorithm diagnostics, watch-hour velocity sprints, monetization roadmaps, and cross-platform cadence between YouTube Studio and Instagram Creator.',
+      quickPrompts: [
+        'Monetization watch hours roadmap',
+        'Omnichannel YouTube + Instagram pacing',
+        'Why did my last video flop?',
+        'How much should I charge sponsors?'
+      ]
+    },
+    hook_doctor: {
+      name: 'Viral Hook Doctor',
+      icon: '⚡',
+      badge: 'First 3-8s Retention Surgery',
+      description: 'Diagnoses retention cliff drop-offs, generates A/B hook scripts with sound design accents, creates visual pattern interrupts, and formats scripts for instant teleprompter rehearsal.',
+      quickPrompts: [
+        'Write 2 high-retention hooks for my next video',
+        'Fix my 45-second intro drop-off',
+        'Script a 15-second viral Reel hook',
+        'Visual pattern interrupts for mid-video slump'
+      ]
+    },
+    packaging: {
+      name: 'Packaging & Thumbnail Lab',
+      icon: '🎨',
+      badge: 'CTR Prediction & Visual Mockups',
+      description: 'Generates high-contrast thumbnail layout mockups, scores curiosity-gap headlines, performs mobile feed readability analysis, and delivers 3-word title formulations.',
+      quickPrompts: [
+        'Simulate high-CTR thumbnail for my topic',
+        'Score my title with the 3-part CTR formula',
+        'The 3-Element visual rule for mobile feeds',
+        'A/B test title options for next upload'
+      ]
+    },
+    nlp_mindreader: {
+      name: 'Audience NLP Mind-Reader',
+      icon: '💬',
+      badge: 'Comment Mining & Objection Handling',
+      description: 'Mines real audience comments across your channel, detects viewer friction points and recurring questions, and drafts high-conversion pinned comment response blueprints.',
+      quickPrompts: [
+        'What are my viewers begging me to build?',
+        'Summarize top comment objections & praises',
+        'Draft a high-conversion pinned comment',
+        'Convert my #1 comment gap into a video outline'
+      ]
+    }
+  },
   topicCounters: {
     flop: 0,
     ideas: 0,
@@ -1261,9 +1312,66 @@ const GeminiGrowthEngine = {
     sponsors: 0,
     gear: 0,
     editing: 0,
-    burnout: 0
+    burnout: 0,
+    hook_doctor: 0,
+    packaging: 0,
+    nlp_mindreader: 0
   },
   lastTopic: null,
+
+  setMode(modeKey) {
+    if (!this.modeConfig[modeKey]) modeKey = 'strategist';
+    this.activeMode = modeKey;
+    localStorage.setItem('creatorpilot_ai_mode', modeKey);
+    
+    // Update mode pills across the entire DOM
+    document.querySelectorAll('.cp-mode-pill').forEach(btn => {
+      if (btn.getAttribute('data-mode') === modeKey) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+
+    const cfg = this.modeConfig[modeKey];
+    if (typeof showToast === 'function') {
+      showToast(`🎯 AI Mode: ${cfg.icon} ${cfg.name} Active`, 'success');
+    }
+
+    // Output mode orientation card in chat
+    const chat = document.getElementById('chatHistory');
+    if (chat) {
+      const qpBtns = cfg.quickPrompts.map(qp => `
+        <button onclick="sendChatMessage('${qp.replace(/'/g, "\\'")}')" class="text-[11px] px-2.5 py-1 rounded-lg bg-slate-700/60 hover:bg-indigo-600/30 text-indigo-300 hover:text-white transition border border-slate-600/50 flex items-center gap-1">
+          <span>⚡</span> <span>${qp}</span>
+        </button>
+      `).join('');
+
+      chat.innerHTML += `
+        <div class="flex items-start gap-3 mb-4 animate-fade-in">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-emerald-400 flex items-center justify-center text-white shrink-0 font-extrabold shadow-lg shadow-indigo-500/20">
+            ${cfg.icon}
+          </div>
+          <div class="bg-slate-800/95 text-slate-200 border border-slate-700/80 rounded-2xl rounded-tl-none p-4 max-w-[90%] leading-relaxed shadow-xl text-xs md:text-sm">
+            <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-700/60">
+              <span class="font-extrabold text-white flex items-center gap-1.5">
+                <span>Switched to ${cfg.name}</span>
+              </span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-semibold border border-indigo-500/30">${cfg.badge}</span>
+            </div>
+            <p class="text-slate-300 mb-2.5">${cfg.description}</p>
+            <div class="pt-2 border-t border-slate-700/60">
+              <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1.5">Suggested Prompts for ${cfg.name}:</span>
+              <div class="flex flex-wrap gap-1.5">
+                ${qpBtns}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      chat.scrollTop = chat.scrollHeight;
+    }
+  },
 
   detectTopic(msg) {
     const m = msg.toLowerCase().trim();
@@ -1271,7 +1379,18 @@ const GeminiGrowthEngine = {
     if (isFollowup && this.lastTopic) {
       return this.lastTopic;
     }
-    if (/flop|last video|underperform|drop off|retention|why did|views low|bad video|loss|left early|bounce/i.test(m)) {
+    
+    // Explicit mode switches or keywords
+    if (/hook|retention drop|intro|first 30s|pacing valley|pattern interrupt|cliff/i.test(m) || this.activeMode === 'hook_doctor') {
+      return 'hook_doctor';
+    }
+    if (/thumbnail|ctr|packaging|clickbait|3-word|visual contrast|click potential/i.test(m) || this.activeMode === 'packaging') {
+      return 'packaging';
+    }
+    if (/sentiment|comment|feedback|audience say|what viewers want|objection|mine|mind-reader/i.test(m) || this.activeMode === 'nlp_mindreader') {
+      return 'nlp_mindreader';
+    }
+    if (/flop|last video|underperform|drop off|why did|views low|bad video|loss|left early|bounce/i.test(m)) {
       return 'flop';
     }
     if (/post this week|video idea|what should i post|topic|content gap|next video|suggest|recommend|brainstorm|concepts|what to make/i.test(m)) {
@@ -1292,28 +1411,323 @@ const GeminiGrowthEngine = {
     if (/burnout|tired|exhausted|overwhelm|motivation|break|stress/i.test(m)) {
       return 'burnout';
     }
-    if (/sentiment|comment|feedback|audience say|critique|positive|negative|praise|reaction|viewers/i.test(m)) {
-      return 'sentiment';
-    }
-    if (/title|ctr|click|thumbnail|packaging|headline|clickbait/i.test(m)) {
+    if (/title|score title/i.test(m)) {
       return 'titles';
     }
-    if (/consisten|schedule|streak|burnout|when to post|upload time|best time|routine|interval|overdue/i.test(m)) {
+    if (/consisten|schedule|streak|when to post|upload time|best time|routine|interval|overdue/i.test(m)) {
       return 'cadence';
     }
     if (/instagram|reels|story|stories|carousel|audio trend|meta|insta|ig/i.test(m)) {
       return 'instagram';
     }
-    if (/youtube|studio|shorts|longform|watch hours|subscribers|ctr/i.test(m)) {
+    if (/youtube|studio|shorts|longform|watch hours|subscribers/i.test(m)) {
       return 'youtube';
     }
-    if (/script|story|intro|hook|structure|outro|framework|pacing/i.test(m)) {
+    if (/script|story|framework|pacing/i.test(m)) {
       return 'scripting';
     }
     if (/algorithm|recommendation|browse|suggested|seo|impressions|traffic/i.test(m)) {
       return 'algorithm';
     }
     return 'general';
+  },
+
+  // Generative UI Visual Card Renderers
+  renderHookShowdownCard(profile, concept, hookA, hookB, retA = '82%', retB = '91%') {
+    return `
+      <div class="cp-gen-card">
+        <div class="flex items-center justify-between text-xs mb-2">
+          <span class="font-bold text-white flex items-center gap-1.5"><span>⚡</span> <span>A/B Hook Architecture Showdown</span></span>
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">Predicted +34% Retention</span>
+        </div>
+        <div class="cp-hook-grid">
+          <div class="cp-hook-card border-slate-700/60">
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <span class="text-[10px] font-bold uppercase text-slate-400">Variant A: Curiosity Contradiction</span>
+                <span class="text-xs font-bold text-amber-400">${retA} Ret.</span>
+              </div>
+              <p class="text-xs text-white font-medium italic">"${hookA}"</p>
+              <span class="text-[10px] text-slate-400 block mt-1.5">🔊 Sound: Low suspense drone into rapid snap cut</span>
+            </div>
+          </div>
+          <div class="cp-hook-card border-indigo-500/50 bg-indigo-950/20">
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <span class="text-[10px] font-bold uppercase text-indigo-400">Variant B: Cold Open Demo Climax</span>
+                <span class="text-xs font-bold text-emerald-400">${retB} Ret. ★</span>
+              </div>
+              <p class="text-xs text-white font-bold italic">"${hookB}"</p>
+              <span class="text-[10px] text-emerald-400 block mt-1.5">🔊 Sound: Bass drop @ 0:02 + terminal punch zoom</span>
+            </div>
+          </div>
+        </div>
+        <div class="text-[11px] text-slate-300 flex items-center justify-between pt-1">
+          <span>Target Pacing: <strong>0:00 - 0:07 visual payoff</strong></span>
+          <span class="text-indigo-400 font-bold">1-Click Rehearsal in Teleprompter ↓</span>
+        </div>
+      </div>
+    `;
+  },
+
+  renderThumbnailSimulatorCard(profile, title, score = 96) {
+    const isTech = profile.key === 'codecraft';
+    const isGaming = profile.key === 'pixelquest';
+    const gradient = isTech ? 'from-slate-950 via-indigo-950 to-slate-900' : (isGaming ? 'from-purple-950 via-violet-950 to-slate-950' : 'from-emerald-950 via-slate-900 to-slate-950');
+    const badgeColor = isTech ? 'bg-rose-600' : (isGaming ? 'bg-amber-600' : 'bg-emerald-600');
+    const textHeadline = isTech ? 'STOP USING THIS' : (isGaming ? 'IMPOSSIBLE BOSS?' : 'DAILY MISTAKE!');
+    const subText = isTech ? 'USE THIS IN 2026' : (isGaming ? 'NO-HIT WORLD RECORD' : 'FIX THIS TODAY');
+
+    return `
+      <div class="cp-gen-card">
+        <div class="flex items-center justify-between text-xs mb-2">
+          <span class="font-bold text-white flex items-center gap-1.5"><span>🎨</span> <span>Mobile Feed Thumbnail Simulator</span></span>
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">Contrast Score: ${score}/100 (A+)</span>
+        </div>
+        <div class="cp-thumb-preview bg-gradient-to-tr ${gradient} border border-indigo-500/40">
+          <div class="flex justify-between items-start">
+            <span class="px-2 py-0.5 rounded ${badgeColor} text-white font-black text-[10px] uppercase tracking-wider">${textHeadline}</span>
+            <span class="px-1.5 py-0.5 rounded bg-black/80 text-white font-mono text-[9px]">12:45</span>
+          </div>
+          <div class="my-auto text-center py-2">
+            <div class="text-base sm:text-lg font-black text-amber-300 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] tracking-tight uppercase">${title}</div>
+            <div class="text-[10px] font-extrabold text-white tracking-widest bg-black/75 px-2.5 py-0.5 rounded-md inline-block mt-1 border border-white/20">${subText}</div>
+          </div>
+          <div class="flex justify-between items-end text-[10px] text-slate-300">
+            <span class="text-emerald-400 font-bold">✓ 3-Element Visual Rule</span>
+            <span>Mobile 1.5-inch Legibility: 100%</span>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  renderRetentionTimelineCard(profile, recentVideo) {
+    const ret = recentVideo.retention || '58%';
+    return `
+      <div class="cp-gen-card">
+        <div class="flex items-center justify-between text-xs mb-2">
+          <span class="font-bold text-white flex items-center gap-1.5"><span>⏱️</span> <span>First 60s Retention Drop-off Surgery</span></span>
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 font-bold border border-rose-500/30">Drop-off Surgery Required</span>
+        </div>
+        <div class="space-y-1.5 text-[11px]">
+          <div class="flex justify-between text-slate-300"><span>0:00 - Initial Hook Launch</span><span class="text-emerald-400 font-bold">89% Retained</span></div>
+          <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden"><div class="h-full bg-emerald-500" style="width: 89%"></div></div>
+          <div class="flex justify-between text-slate-300"><span>0:45 - Animated Intro Bumper Cliff</span><span class="text-rose-400 font-bold">${ret} (-31% Drop)</span></div>
+          <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden"><div class="h-full bg-rose-500" style="width: 58%"></div></div>
+        </div>
+        <div class="mt-2.5 p-2 rounded-lg bg-indigo-950/40 border border-indigo-500/30 text-[11px] text-indigo-200">
+          💡 <strong>Surgery Diagnosis:</strong> Trimming the 37-second logo bumper and showing the live outcome at 0:05 restores an estimated <strong>+24% watch time</strong>!
+        </div>
+      </div>
+    `;
+  },
+
+  renderOmnichannelMatrixCard(profile) {
+    const yt = profile.youtubeSession || { channelName: profile.name, avgViews: '16.2K' };
+    const ig = profile.instagramSession || { handle: profile.handle, avgPlays: '84.5K' };
+    return `
+      <div class="cp-gen-card">
+        <div class="flex items-center justify-between text-xs mb-2">
+          <span class="font-bold text-white flex items-center gap-1.5"><span>🌐</span> <span>Omnichannel Cross-Pacing Matrix</span></span>
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">Peak Cross-Funnel</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+          <div class="p-2.5 rounded-xl bg-red-950/30 border border-red-500/30">
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-bold text-red-300 flex items-center gap-1"><span>🔴</span> YouTube Studio</span>
+              <span class="text-[9px] text-slate-400">${yt.avgViews} avg</span>
+            </div>
+            <div class="text-white font-semibold">Thursday @ 7:00 PM EST</div>
+            <div class="text-[10px] text-slate-400 mt-1">Full 14m Tutorial with timestamp chapters</div>
+          </div>
+          <div class="p-2.5 rounded-xl bg-fuchsia-950/30 border border-fuchsia-500/30">
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-bold text-fuchsia-300 flex items-center gap-1"><span>🟣</span> Instagram Creator</span>
+              <span class="text-[9px] text-slate-400">${ig.avgPlays} avg</span>
+            </div>
+            <div class="text-white font-semibold">Friday @ 11:30 AM EST</div>
+            <div class="text-[10px] text-slate-400 mt-1">30s Visual Punch Cut Reel with Link Sticker</div>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  renderCommentBlueprintCard(profile, gap) {
+    return `
+      <div class="cp-gen-card">
+        <div class="flex items-center justify-between text-xs mb-2">
+          <span class="font-bold text-white flex items-center gap-1.5"><span>💬</span> <span>Audience-Mined Video Blueprint</span></span>
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-bold border border-indigo-500/30">${gap.requests || '142+ Requests'}</span>
+        </div>
+        <div class="p-2.5 rounded-xl bg-slate-900/80 border border-slate-700/60 mb-2">
+          <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Real Viewer Comment:</span>
+          <p class="text-xs text-white italic">"${gap.quote || 'How do I deploy this stack for free without a credit card?'}"</p>
+        </div>
+        <div class="text-[11px] text-slate-300 space-y-1">
+          <div>• <strong>Primary Viewer Fear:</strong> Unexpected monthly bills & complex cloud configuration.</div>
+          <div>• <strong>Winning Angle:</strong> Frame concept as <em>'Deploy in 5 Mins for $0.00 (Zero Card Required)'</em>.</div>
+          <div>• <strong>High-Conversion Pinned Comment:</strong> <em>'Here is the complete template from minute 04:20 free to clone!'</em></div>
+        </div>
+      </div>
+    `;
+  },
+
+  renderMonetizationSprintCard(profile) {
+    const left = profile.watchHoursTarget - profile.watchHours;
+    const dailyNeeded = Math.round(left / 28);
+    return `
+      <div class="cp-gen-card">
+        <div class="flex items-center justify-between text-xs mb-2">
+          <span class="font-bold text-white flex items-center gap-1.5"><span>💰</span> <span>YPP Partner Monetization Sprint Meter</span></span>
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">${profile.monetizationStatus}</span>
+        </div>
+        <div class="space-y-1.5 text-[11px]">
+          <div class="flex justify-between text-slate-300"><span>Watch Hours Progress</span><span class="text-emerald-400 font-bold">${profile.watchHours} / 4,000 hrs (${profile.watchHoursPct}%)</span></div>
+          <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden"><div class="h-full bg-gradient-to-r from-indigo-500 to-emerald-400" style="width: ${profile.watchHoursPct}%"></div></div>
+        </div>
+        <div class="grid grid-cols-2 gap-2 mt-2.5 text-[11px]">
+          <div class="p-2 rounded-lg bg-slate-900/60 border border-slate-700/60">
+            <span class="text-[10px] text-slate-400 block">Hours Remaining:</span>
+            <span class="text-sm font-black text-rose-400">${left} hrs</span>
+          </div>
+          <div class="p-2 rounded-lg bg-slate-900/60 border border-slate-700/60">
+            <span class="text-[10px] text-slate-400 block">Sprint Target:</span>
+            <span class="text-sm font-black text-emerald-400">~${dailyNeeded} hrs / day</span>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  // 4 Mode-Specific Intelligence Handlers
+  getHookDoctorDimension(count, profile) {
+    const isTech = profile.key === 'codecraft';
+    const isGaming = profile.key === 'pixelquest';
+    const concept = isTech ? "FastAPI Authentication Blueprint" : (isGaming ? "Elden Ring No-Hit Strategy" : "Weekly Meal Prep System");
+    const hookA = isTech ? "Almost every developer implements auth completely wrong in 2026. Here is why..." : (isGaming ? "I beat the hardest boss without rolling once. Here is the trick..." : "Stop drinking smoothies on an empty stomach. Do this instead...");
+    const hookB = isTech ? "This single line of code replaced my entire 400-line backend auth system. Watch this." : (isGaming ? "Watch what happens in 0.1 seconds when Malenia starts her combo." : "5 high-protein meal prep bowls cooked in 20 minutes for under $3 each.");
+    const fullScript = `[VISUAL HOOK - 0:00 to 0:08]\n"${hookB}"\n\n[STAKES & TENSION - 0:08 to 0:30]\nMost tutorials make this 10x harder than it needs to be. Today I am giving you the exact production framework.\n\n[PAYOFF #1 - 0:30 to 2:00]\nLet's pull up the demo. Notice the latency benchmark on screen right now...\n\n[OUTRO - Swift 15s]\nGrab the starter code in the pinned comment, and check out my database guide next!`;
+
+    return {
+      dimensionTitle: "Viral Hook Doctor: 3-Second Retention Engineering & Script Blueprint",
+      badge: "Viral Hook Surgery",
+      takeaway: `70% of viewers decide whether to stay within <strong>the first 3 to 8 seconds</strong>. Never introduce yourself or say 'welcome back to the channel'—open directly with <em>The Outcome Climax</em>.`,
+      telemetry: `Channel 30s Retention: <span class="text-amber-400 font-bold">${profile.videosList?.[0]?.retention || '58%'}</span>. Videos opening with a 5-second live outcome achieve <strong>+31% higher average view duration</strong>.`,
+      generativeCardHtml: this.renderHookShowdownCard(profile, concept, hookA, hookB),
+      steps: [
+        "Cut out the 45-second animated logo sequence entirely.",
+        "Use Sensory Sound Design: pair visual cuts with subtle low-frequency whooshes and bass drops.",
+        "Rehearse with the CreatorPilot Teleprompter at 1.1x speed to keep vocal energy high."
+      ],
+      experiment: "Rehearse Hook Variant B in the live teleprompter studio right now and record take 1.",
+      audioText: `Hook Doctor alert: open with Hook Variant B: show the working outcome in frame one with a bass drop. Rehearse it in the teleprompter studio below.`,
+      chips: [
+        "Rehearse hook in Teleprompter",
+        "Fix mid-video 3-minute slump",
+        "Script a 15-second viral Reel hook",
+        "Switch to Packaging Lab"
+      ],
+      actions: [
+        { label: "🎙️ Open in Teleprompter Studio", action: "open_teleprompter", payload: { title: concept + " (Hook Rehearsal)", scriptText: fullScript } },
+        { label: "📌 Save Hook to Idea Vault", action: "save_idea", payload: { title: concept + " (High-Retention Hook)", category: "Hook Blueprint", score: 96, effort: "Low (1-2h)" } },
+        { label: "📋 Copy Script Outline", action: "copy_script", payload: { scriptText: fullScript } }
+      ]
+    };
+  },
+
+  getPackagingDimension(count, profile) {
+    const isTech = profile.key === 'codecraft';
+    const isGaming = profile.key === 'pixelquest';
+    const testTitle = isTech ? "Why You Should Stop Using Express.js in 2026" : (isGaming ? "Top 10 Secret Bosses You Missed in 2026" : "Stop Drinking Green Smoothies Wrong");
+    const scriptOutline = `[TITLE PACKAGING BRIEF]\nPrimary: ${testTitle}\nAlternative: [2026 Roadmap] Stop Doing This!\n\nThumbnail 3-Element Visual Brief:\n1. Hero Subject: Expressive face looking shocked at terminal\n2. Context Prop: Bright neon warning badge\n3. Bold Text: MAX 3 WORDS in yellow on obsidian slate`;
+
+    return {
+      dimensionTitle: "Packaging & Thumbnail Lab: CTR Prediction & Visual Hierarchy Simulation",
+      badge: "Packaging Engineering",
+      takeaway: `Your thumbnails compete against 15 other videos on mobile feeds. You must follow the <strong>3-Element Visual Rule</strong>: Hero Subject + Context Prop + Max 3 Bold Words.`,
+      telemetry: `Predicted CTR: <span class="text-emerald-400 font-bold">9.2% (Tier A+)</span>. Thumbnails with more than 4 words suffer a <strong>24% lower mobile CTR</strong>.`,
+      generativeCardHtml: this.renderThumbnailSimulatorCard(profile, testTitle, 96),
+      steps: [
+        "Use the 3-part title formula: [Curiosity Trigger] + [Tangible Deliverable] + [Bracket Tag].",
+        "High-contrast color pairing: Amber/Yellow (#fbbf24) against Obsidian Slate (#0b0f19).",
+        "Squint test: View thumbnail at 20% zoom—if the main emotion isn't readable, simplify it."
+      ],
+      experiment: "A/B test this simulated thumbnail design against your standard layout for your next upload.",
+      audioText: `Packaging Lab analysis complete: your mobile contrast score is 96 out of 100. Keep text to maximum three words for mobile feed clarity.`,
+      chips: [
+        "The 3-Element visual rule",
+        "A/B test title options",
+        "Why did my last video flop?",
+        "Switch to Executive Strategist"
+      ],
+      actions: [
+        { label: "📌 Save Concept to Idea Vault", action: "save_idea", payload: { title: testTitle, category: "Packaging A/B", score: 96, effort: "Low (1h)" } },
+        { label: "🗓️ Add Design Sprint to Plan", action: "add_plan", payload: { day: "Thursday", task: "Thumbnail A/B Render", desc: "Render 3 high-contrast variations for " + testTitle, tag: "Thumbnails" } },
+        { label: "⏰ Arm 30m Packaging Alarm", action: "arm_alarm", payload: { seconds: 1800, label: "Thumbnail Design Sprint" } }
+      ]
+    };
+  },
+
+  getNlpMindReaderDimension(count, profile) {
+    const topGap = profile.contentGaps?.[0] || { title: "FastAPI JWT Authentication Masterclass", requests: "142+ requests", quote: "How do I deploy this stack for free without a credit card?" };
+    const script = `[COMMUNITY-MINED VIDEO SCRIPT]\nTopic: ${topGap.title}\nViewer Quote: "${topGap.quote}"\n\nOpening Bridge:\n"In the comments of my last video, DevGamer and 89 others asked: how do you deploy this for free with zero credit card? Today, here is the exact 5-minute solution."`;
+
+    return {
+      dimensionTitle: "Audience NLP Mind-Reader: Comment Sentiment & Demand Blueprint",
+      badge: "Community NLP Intelligence",
+      takeaway: `Stop guessing topics! Over <strong>${topGap.requests}</strong> are demanding: <em>'${topGap.title}'</em>. This gives you a guaranteed built-in audience on hour one.`,
+      telemetry: `Audience Sentiment Score: <span class="text-emerald-400 font-bold">${profile.sentiment?.score || '+0.78 (Very Positive)'}</span>. Top request frequency: <strong>3.8x above channel average</strong>.`,
+      generativeCardHtml: this.renderCommentBlueprintCard(profile, topGap),
+      steps: [
+        "Open the video by quoting the top viewer comment on screen to create instant social proof.",
+        "Address the #1 fear: explain how to avoid surprise cloud billing in the first 2 minutes.",
+        "Pin a comment thanking the community and providing a copy-paste GitHub starter repo."
+      ],
+      experiment: "Publish this audience-demanded tutorial on your peak slot this Thursday evening.",
+      audioText: `Your viewers are explicitly asking for ${topGap.title}. Quoting their comment on screen creates instant social proof and high community loyalty.`,
+      chips: [
+        "Draft high-conversion pinned comment",
+        "Summarize viewer friction points",
+        "What should I post this week?",
+        "Switch to Viral Hook Doctor"
+      ],
+      actions: [
+        { label: "📌 Save Blueprint to Idea Vault", action: "save_idea", payload: { title: topGap.title, category: "Community Request", score: 98, effort: "Medium (3-4h)" } },
+        { label: "🗓️ Add Q&A Video to Weekly Plan", action: "add_plan", payload: { day: "Friday", task: "Publish " + topGap.title, desc: "Audience-demanded tutorial solving " + topGap.quote, tag: "Community" } },
+        { label: "⏰ Arm 25m Outline Alarm", action: "arm_alarm", payload: { seconds: 1500, label: "Scripting Community Video" } }
+      ]
+    };
+  },
+
+  getStrategistDimension(count, profile) {
+    const recentVideo = profile.videosList?.[0] || { title: "Latest Video", retention: "58%" };
+    return {
+      dimensionTitle: "Executive Strategist: Channel Algorithm Diagnostics & Omnichannel Pacing",
+      badge: "Algorithm Strategy",
+      takeaway: `Your channel operates with a strong Growth Health Score of <strong>${profile.healthScore || 82}/100</strong>. Your top lever right now is bridging your connected <strong>YouTube Studio</strong> and <strong>Instagram Creator</strong> sessions.`,
+      telemetry: `YouTube Subscribers: <strong>${profile.subs}</strong> • IG Followers: <strong>${profile.instagramSession?.followers || '46.2K'}</strong> • Watch Hours: <strong>${profile.watchHours} / 4,000</strong> (${profile.watchHoursPct}%).`,
+      generativeCardHtml: this.renderOmnichannelMatrixCard(profile),
+      steps: [
+        "Publish longform YouTube video on Thursday at 7:00 PM EST for maximum subscriber prime time.",
+        "Extract 2 vertical 30s punch-cut clips and post to Instagram Reels on Friday morning with Story stickers.",
+        "Maintain your 4-week upload consistency streak to protect your algorithmic impression multiplier."
+      ],
+      experiment: "Cross-promote your next YouTube upload on your Instagram Story 2 hours prior to public release.",
+      audioText: `Executive strategy brief: your omnichannel funnel between YouTube and Instagram is operating smoothly. Keep your Thursday 7 PM slot active to protect your four-week streak.`,
+      chips: [
+        "Monetization watch hours sprint",
+        "Why did my last video flop?",
+        "How much should I charge sponsors?",
+        "Switch to Viral Hook Doctor"
+      ],
+      actions: [
+        { label: "🗓️ Add Pacing to Weekly Plan", action: "add_plan", payload: { day: "Thursday", task: "Omnichannel Upload Sprint", desc: "YouTube Studio 7 PM + Instagram Reel derivative", tag: "Publish" } },
+        { label: "⏰ Arm 45m Strategy Alarm", action: "arm_alarm", payload: { seconds: 2700, label: "Strategic Planning Sprint" } },
+        { label: "🟣 Switch to Instagram Focus", action: "switch_platform", payload: { platform: "instagram" } }
+      ]
+    };
   },
 
   generate(msg, profile) {
@@ -1329,7 +1743,13 @@ const GeminiGrowthEngine = {
     const topCollab = profile.collabs ? profile.collabs[0] : { name: "Peer Channel", gain: "+1,200 subs", concept: "Collaborative Benchmark" };
 
     let res = null;
-    if (topic === 'instagram') {
+    if (topic === 'hook_doctor') {
+      res = this.getHookDoctorDimension(count, profile);
+    } else if (topic === 'packaging') {
+      res = this.getPackagingDimension(count, profile);
+    } else if (topic === 'nlp_mindreader') {
+      res = this.getNlpMindReaderDimension(count, profile);
+    } else if (topic === 'instagram') {
       res = this.getInstagramDimension(count, profile);
     } else if (topic === 'youtube') {
       res = this.getYoutubeDimension(count, profile);
@@ -1359,6 +1779,15 @@ const GeminiGrowthEngine = {
       res = this.getAlgorithmDimension(count, profile);
     } else {
       res = this.getGeneralDimension(count, msg, profile);
+    }
+
+    // Default actions if not explicitly populated
+    if (!res.actions) {
+      res.actions = [
+        { label: "📌 Save to Idea Vault", action: "save_idea", payload: { title: res.dimensionTitle, category: res.badge, score: 94, effort: "Medium (3h)" } },
+        { label: "🗓️ Add to Weekly Plan", action: "add_plan", payload: { day: "Thursday", task: res.badge, desc: res.dimensionTitle, tag: "Strategy" } },
+        { label: "⏰ Arm 30m Alarm", action: "arm_alarm", payload: { seconds: 1800, label: res.badge } }
+      ];
     }
 
     this.history.push({ role: 'user', content: msg });
@@ -2128,8 +2557,14 @@ function sendChatMessage(text) {
         </button>
       `).join('');
 
+      const actionsHtml = (res.actions || []).map(act => `
+        <button onclick="executeAiAction(this, '${act.action}', '${encodeURIComponent(JSON.stringify(act.payload || {}))}')" class="cp-action-btn">
+          <span>${act.label}</span>
+        </button>
+      `).join('');
+
       chat.innerHTML += `
-        <div class="flex items-start gap-3 mb-4">
+        <div class="flex items-start gap-3 mb-4 animate-fade-in">
           <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-emerald-400 flex items-center justify-center text-white shrink-0 font-extrabold shadow-lg shadow-indigo-500/20">
             ✨
           </div>
@@ -2159,6 +2594,9 @@ function sendChatMessage(text) {
               <p class="text-slate-300">${res.telemetry}</p>
             </div>
 
+            <!-- Rich Generative UI In-Chat Card -->
+            ${res.generativeCardHtml ? res.generativeCardHtml : ''}
+
             <!-- Tactical Action Blueprint -->
             <div class="mb-3">
               <span class="text-[10px] uppercase font-bold text-amber-400 tracking-wider block mb-1">⚡ Tactical Action Blueprint</span>
@@ -2173,8 +2611,18 @@ function sendChatMessage(text) {
               <span><strong>Next Experiment:</strong> ${res.experiment}</span>
             </div>
 
+            <!-- 1-Click Studio Actions Execution Bar -->
+            ${actionsHtml ? `
+              <div class="cp-action-bar">
+                <span class="text-[10px] uppercase font-bold text-indigo-400 w-full block mb-1 flex items-center gap-1">
+                  <span>🚀</span> <span>1-Click Studio Live Actions:</span>
+                </span>
+                ${actionsHtml}
+              </div>
+            ` : ''}
+
             <!-- Interactive Follow-up Chips -->
-            <div class="pt-2.5 border-t border-slate-700/60">
+            <div class="pt-2.5 border-t border-slate-700/60 mt-3">
               <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1.5">Explore Next Strategy Dimension:</span>
               <div class="flex flex-wrap gap-1.5">
                 ${chipsHtml}
@@ -2205,6 +2653,7 @@ function toggleVoice() {
     try { activeRecognition.stop(); } catch(e){}
     activeRecognition = null;
     if (micBtn) micBtn.classList.remove('bg-rose-600', 'animate-pulse');
+    if (typeof AudioVisualizerEngine !== 'undefined') AudioVisualizerEngine.setActive(false);
     return;
   }
   try {
@@ -2215,12 +2664,14 @@ function toggleVoice() {
       if (micBtn) micBtn.classList.add('bg-rose-600', 'animate-pulse');
       const ci = document.getElementById('chatInput');
       if (ci) ci.placeholder = "Listening... Speak now!";
+      if (typeof AudioVisualizerEngine !== 'undefined') AudioVisualizerEngine.setActive(true);
     };
     recognition.onend = () => {
       if (micBtn) micBtn.classList.remove('bg-rose-600', 'animate-pulse');
       const ci = document.getElementById('chatInput');
       if (ci) ci.placeholder = "Ask your coach anything...";
       activeRecognition = null;
+      if (typeof AudioVisualizerEngine !== 'undefined') AudioVisualizerEngine.setActive(false);
     };
     recognition.onresult = (e) => {
       const transcript = e.results[0][0].transcript;
@@ -2231,6 +2682,401 @@ function toggleVoice() {
     recognition.start();
   } catch(err) {
     console.error("Speech Recognition Error:", err);
+  }
+}
+
+// ==========================================
+// 1-CLICK AGENT ACTION DISPATCHER
+// Executes actions directly in the studio: Idea Vault, Planner, Alarms, Platform
+// ==========================================
+function executeAiAction(btnEl, actionType, payloadEncoded) {
+  let payload = {};
+  try {
+    payload = JSON.parse(decodeURIComponent(payloadEncoded));
+  } catch (e) {
+    console.error("Action payload decode error:", e);
+  }
+
+  const p = (typeof getActiveProfile === 'function') ? getActiveProfile() : activeCreator;
+
+  if (actionType === 'save_idea') {
+    if (!p.vaultIdeas) p.vaultIdeas = [];
+    p.vaultIdeas.unshift({
+      category: payload.category || "AI Concept",
+      score: payload.score || 96,
+      title: payload.title || "New Video Concept",
+      effort: payload.effort || "Medium (3-4h)"
+    });
+    localStorage.setItem('creatorpilot_vault_ideas', JSON.stringify(p.vaultIdeas));
+    if (typeof showToast === 'function') {
+      showToast(`💡 Saved "${payload.title}" to Idea Vault! (Score: ★ ${payload.score || 96})`, 'success');
+    }
+    btnEl.classList.add('executed');
+    btnEl.innerHTML = `<span>✓ Saved to Vault</span>`;
+    if (typeof renderVault === 'function') renderVault(p);
+  }
+  else if (actionType === 'add_plan') {
+    if (!p.weeklyPlan) p.weeklyPlan = [];
+    const targetDay = payload.day || "Thursday";
+    const found = p.weeklyPlan.find(d => d.day && d.day.toLowerCase() === targetDay.toLowerCase());
+    if (found) {
+      found.task = payload.task || found.task;
+      found.desc = (payload.desc || "") + " (AI Scheduled)";
+      found.done = false;
+    } else {
+      p.weeklyPlan.push({
+        day: targetDay,
+        tag: payload.tag || "Production",
+        tagClass: "bg-indigo-500/20 text-indigo-300",
+        task: payload.task || "New Task",
+        desc: payload.desc || "AI Scheduled Task",
+        done: false
+      });
+    }
+    localStorage.setItem('creatorpilot_weekly_plan', JSON.stringify(p.weeklyPlan));
+    if (typeof showToast === 'function') {
+      showToast(`🗓️ Added to ${targetDay} Schedule: "${payload.task}"!`, 'success');
+    }
+    btnEl.classList.add('executed');
+    btnEl.innerHTML = `<span>✓ Added to Plan</span>`;
+    if (typeof renderWeeklyCards === 'function') renderWeeklyCards(p);
+  }
+  else if (actionType === 'arm_alarm') {
+    const seconds = payload.seconds || 1800;
+    const label = payload.label || "Production Sprint Deadline";
+    if (typeof LiveAlarmEngine !== 'undefined') {
+      LiveAlarmEngine.armAlarm(seconds, label);
+    }
+    btnEl.classList.add('executed');
+    btnEl.innerHTML = `<span>✓ Alarm Armed (${Math.round(seconds/60)}m)</span>`;
+  }
+  else if (actionType === 'open_teleprompter') {
+    openTeleprompter(payload.scriptText || "", payload.title || "Hook Rehearsal");
+  }
+  else if (actionType === 'copy_script') {
+    copyScriptToClipboard(encodeURIComponent(payload.scriptText || ""));
+    btnEl.classList.add('executed');
+    btnEl.innerHTML = `<span>✓ Copied Script</span>`;
+  }
+  else if (actionType === 'switch_platform') {
+    if (typeof setPlatformSession === 'function') {
+      setPlatformSession(payload.platform || 'all');
+    }
+    btnEl.classList.add('executed');
+    btnEl.innerHTML = `<span>✓ Active on ${payload.platform === 'instagram' ? 'Instagram' : 'YouTube'}</span>`;
+  }
+}
+
+// ==========================================
+// TELEPROMPTER STUDIO ENGINE
+// Smooth autoscroll, mirror flip for beam-splitter glass, font resizing
+// ==========================================
+let teleprompterInterval = null;
+let teleprompterSpeed = 1;
+let teleprompterFontSize = 24;
+let isTeleprompterMirrored = false;
+
+function openTeleprompter(scriptText, title = "Teleprompter Studio") {
+  let modal = document.getElementById('cpTeleprompterModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'cpTeleprompterModal';
+    modal.className = "fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4";
+    document.body.appendChild(modal);
+  }
+
+  const words = scriptText.trim().split(/\s+/).filter(Boolean).length;
+  const estimatedSeconds = Math.round((words / 130) * 60);
+
+  modal.innerHTML = `
+    <div class="cp-teleprompter-glass rounded-3xl w-full max-w-3xl h-[85vh] flex flex-col overflow-hidden relative border border-indigo-500/50 shadow-2xl">
+      <!-- Top Bar -->
+      <div class="p-4 border-b border-slate-800 bg-slate-900/80 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 to-rose-500 flex items-center justify-center text-white font-bold text-sm shadow-md">
+            🎙️
+          </div>
+          <div>
+            <h3 class="text-sm font-extrabold text-white flex items-center gap-2">
+              <span>${title}</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-mono">
+                ${words} words • ~${estimatedSeconds}s read time
+              </span>
+            </h3>
+            <p class="text-[11px] text-slate-400">Professional Studio Teleprompter with Smooth Autoscroll & Mirroring</p>
+          </div>
+        </div>
+        <button onclick="closeTeleprompter()" class="p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white transition">✕</button>
+      </div>
+
+      <!-- Control Strip -->
+      <div class="px-4 py-2.5 border-b border-slate-800/80 bg-slate-900/60 flex items-center justify-between flex-wrap gap-2 text-xs shrink-0">
+        <div class="flex items-center gap-2">
+          <button id="tpPlayBtn" onclick="toggleTeleprompterScroll()" class="px-4 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold hover:scale-105 active:scale-95 transition flex items-center gap-1.5 shadow-md">
+            <span id="tpPlayIcon">▶</span> <span id="tpPlayLabel">Start Scroll</span>
+          </button>
+          <div class="flex items-center bg-slate-800 rounded-xl p-0.5 border border-slate-700">
+            <button onclick="setTeleprompterSpeed(0.8)" class="px-2 py-1 rounded-lg text-[10px] font-bold text-slate-300 hover:text-white" title="Slow pace">0.8x</button>
+            <button onclick="setTeleprompterSpeed(1)" class="px-2 py-1 rounded-lg text-[10px] font-bold bg-indigo-600 text-white" id="tpSpeed1">1.0x</button>
+            <button onclick="setTeleprompterSpeed(1.5)" class="px-2 py-1 rounded-lg text-[10px] font-bold text-slate-300 hover:text-white" title="Fast pace">1.5x</button>
+            <button onclick="setTeleprompterSpeed(2)" class="px-2 py-1 rounded-lg text-[10px] font-bold text-slate-300 hover:text-white" title="Sprint">2.0x</button>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <div class="flex items-center gap-1 bg-slate-800 rounded-xl px-2 py-1 border border-slate-700">
+            <span class="text-[10px] text-slate-400">Size:</span>
+            <button onclick="changeTeleprompterFontSize(-3)" class="w-6 h-6 rounded bg-slate-700 text-slate-200 font-bold hover:bg-slate-600 text-xs">-</button>
+            <span id="tpFontSizeLabel" class="text-[11px] font-mono text-indigo-300 w-7 text-center">24px</span>
+            <button onclick="changeTeleprompterFontSize(3)" class="w-6 h-6 rounded bg-slate-700 text-slate-200 font-bold hover:bg-slate-600 text-xs">+</button>
+          </div>
+          <button onclick="toggleTeleprompterMirror()" id="tpMirrorBtn" class="px-2.5 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white border border-slate-700 text-[11px] font-bold transition flex items-center gap-1" title="Mirror for beam-splitter teleprompter glass">
+            <span>🪞</span> <span>Mirror</span>
+          </button>
+          <button onclick="resetTeleprompterScroll()" class="px-2.5 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white border border-slate-700 text-[11px] font-bold transition" title="Reset to top">
+            <span>⏮</span> <span>Top</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Teleprompter Reading Area -->
+      <div id="tpScrollContainer" class="flex-1 overflow-y-auto p-8 relative flex flex-col items-center">
+        <!-- Visual Eye-line guide -->
+        <div class="sticky top-1/3 w-full border-t border-rose-500/40 pointer-events-none z-10 flex items-center justify-between text-[9px] uppercase tracking-widest text-rose-400 font-black opacity-60">
+          <span>Eye-line Target</span>
+          <span>Camera Lens Level</span>
+        </div>
+        <div id="tpTextContent" class="cp-teleprompter-text max-w-2xl text-center text-slate-100 py-24 leading-relaxed font-bold" style="font-size: ${teleprompterFontSize}px;">
+          ${scriptText.replace(/\n\n/g, '<br/><br/>').replace(/\n/g, '<br/>')}
+        </div>
+      </div>
+
+      <!-- Bottom Status Bar -->
+      <div class="p-3 border-t border-slate-800 bg-slate-900/80 flex items-center justify-between text-xs shrink-0">
+        <span class="text-slate-400 text-[11px]">💡 Tip: Position camera directly behind your screen for perfect natural eye-contact.</span>
+        <button onclick="copyScriptToClipboard('${encodeURIComponent(scriptText)}')" class="px-3.5 py-1.5 rounded-xl bg-indigo-600/30 hover:bg-indigo-600 text-indigo-300 hover:text-white border border-indigo-500/40 font-bold text-xs transition flex items-center gap-1.5">
+          <span>📋</span> <span>Copy Full Script</span>
+        </button>
+      </div>
+    </div>
+  `;
+
+  modal.classList.remove('hidden');
+}
+
+function closeTeleprompter() {
+  stopTeleprompterScroll();
+  const modal = document.getElementById('cpTeleprompterModal');
+  if (modal) modal.classList.add('hidden');
+}
+
+function toggleTeleprompterScroll() {
+  if (teleprompterInterval) {
+    stopTeleprompterScroll();
+  } else {
+    startTeleprompterScroll();
+  }
+}
+
+function startTeleprompterScroll() {
+  const container = document.getElementById('tpScrollContainer');
+  if (!container) return;
+  const playIcon = document.getElementById('tpPlayIcon');
+  const playLabel = document.getElementById('tpPlayLabel');
+  const playBtn = document.getElementById('tpPlayBtn');
+  if (playIcon) playIcon.textContent = "⏸";
+  if (playLabel) playLabel.textContent = "Pause";
+  if (playBtn) playBtn.className = "px-4 py-1.5 rounded-xl bg-amber-600 text-white font-bold hover:scale-105 active:scale-95 transition flex items-center gap-1.5 shadow-md";
+
+  teleprompterInterval = setInterval(() => {
+    container.scrollTop += (teleprompterSpeed * 1.5);
+    if (container.scrollTop + container.clientHeight >= container.scrollHeight - 10) {
+      stopTeleprompterScroll();
+      if (typeof showToast === 'function') {
+        showToast("🎉 Teleprompter script completed! Ready to record take #1.", "success");
+      }
+    }
+  }, 30);
+}
+
+function stopTeleprompterScroll() {
+  if (teleprompterInterval) {
+    clearInterval(teleprompterInterval);
+    teleprompterInterval = null;
+  }
+  const playIcon = document.getElementById('tpPlayIcon');
+  const playLabel = document.getElementById('tpPlayLabel');
+  const playBtn = document.getElementById('tpPlayBtn');
+  if (playIcon) playIcon.textContent = "▶";
+  if (playLabel) playLabel.textContent = "Start Scroll";
+  if (playBtn) playBtn.className = "px-4 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold hover:scale-105 active:scale-95 transition flex items-center gap-1.5 shadow-md";
+}
+
+function setTeleprompterSpeed(speed) {
+  teleprompterSpeed = speed;
+  ['0.8', '1', '1.5', '2'].forEach(s => {
+    const b = document.getElementById(`tpSpeed${s}`);
+    if (b) {
+      if (parseFloat(s) === speed) {
+        b.className = "px-2 py-1 rounded-lg text-[10px] font-bold bg-indigo-600 text-white";
+      } else {
+        b.className = "px-2 py-1 rounded-lg text-[10px] font-bold text-slate-300 hover:text-white";
+      }
+    }
+  });
+  if (typeof showToast === 'function') {
+    showToast(`⚡ Teleprompter scrolling speed: ${speed}x`, "info");
+  }
+}
+
+function changeTeleprompterFontSize(delta) {
+  teleprompterFontSize = Math.max(16, Math.min(48, teleprompterFontSize + delta));
+  const el = document.getElementById('tpTextContent');
+  const lbl = document.getElementById('tpFontSizeLabel');
+  if (el) el.style.fontSize = teleprompterFontSize + 'px';
+  if (lbl) lbl.textContent = teleprompterFontSize + 'px';
+}
+
+function toggleTeleprompterMirror() {
+  isTeleprompterMirrored = !isTeleprompterMirrored;
+  const el = document.getElementById('tpTextContent');
+  const btn = document.getElementById('tpMirrorBtn');
+  if (el) el.classList.toggle('mirrored', isTeleprompterMirrored);
+  if (btn) {
+    btn.className = isTeleprompterMirrored 
+      ? "px-2.5 py-1.5 rounded-xl bg-indigo-600 text-white border border-indigo-500 text-[11px] font-bold transition flex items-center gap-1"
+      : "px-2.5 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white border border-slate-700 text-[11px] font-bold transition flex items-center gap-1";
+  }
+}
+
+function resetTeleprompterScroll() {
+  const container = document.getElementById('tpScrollContainer');
+  if (container) container.scrollTop = 0;
+  stopTeleprompterScroll();
+}
+
+function copyScriptToClipboard(encoded) {
+  const txt = decodeURIComponent(encoded);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt).then(() => {
+      if (typeof showToast === 'function') {
+        showToast("📋 Script outline copied to clipboard!", "success");
+      }
+    });
+  } else if (typeof showToast === 'function') {
+    showToast("📋 Script outline copied!", "info");
+  }
+}
+
+// ==========================================
+// REAL-TIME AUDIO SPECTRUM VISUALIZER ENGINE
+// Canvas animation loop with reactive audio bars
+// ==========================================
+const AudioVisualizerEngine = {
+  canvas: null,
+  ctx: null,
+  animId: null,
+  bars: 36,
+  isActive: false,
+
+  init(canvasId = 'audioVisualizerCanvas') {
+    this.canvas = document.getElementById(canvasId);
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext('2d');
+    this.resize();
+    window.addEventListener('resize', () => this.resize());
+    this.startLoop();
+  },
+
+  resize() {
+    if (!this.canvas) return;
+    this.canvas.width = this.canvas.clientWidth * (window.devicePixelRatio || 1);
+    this.canvas.height = this.canvas.clientHeight * (window.devicePixelRatio || 1);
+  },
+
+  setActive(active) {
+    this.isActive = active;
+  },
+
+  startLoop() {
+    let phase = 0;
+    const render = () => {
+      if (!this.canvas || !this.ctx) return;
+      const ctx = this.ctx;
+      const w = this.canvas.width;
+      const h = this.canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      phase += this.isActive ? 0.08 : 0.02;
+      const barWidth = (w / this.bars) - 2;
+
+      for (let i = 0; i < this.bars; i++) {
+        const factor = Math.sin((i / this.bars) * Math.PI);
+        const wave = Math.sin(phase + (i * 0.3)) * Math.cos(phase * 0.7 + (i * 0.2));
+        const intensity = this.isActive ? (0.35 + Math.abs(wave) * 0.6) : (0.12 + Math.abs(wave) * 0.15);
+        const barHeight = Math.max(4, h * factor * intensity);
+        const x = i * (barWidth + 2);
+        const y = (h - barHeight) / 2;
+
+        const grad = ctx.createLinearGradient(0, y, 0, y + barHeight);
+        if (this.isActive) {
+          grad.addColorStop(0, '#ec4899');
+          grad.addColorStop(0.5, '#6366f1');
+          grad.addColorStop(1, '#06b6d4');
+        } else {
+          grad.addColorStop(0, 'rgba(99, 102, 241, 0.45)');
+          grad.addColorStop(1, 'rgba(6, 182, 212, 0.2)');
+        }
+
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        if (typeof ctx.roundRect === 'function') {
+          ctx.roundRect(x, y, Math.max(2, barWidth), barHeight, 3);
+        } else {
+          ctx.rect(x, y, Math.max(2, barWidth), barHeight);
+        }
+        ctx.fill();
+      }
+
+      this.animId = requestAnimationFrame(render);
+    };
+    render();
+  }
+};
+
+// ==========================================
+// VOICE PERSONALITIES & SPEECH SYNTHESIS ENGINE
+// ==========================================
+const VOICE_PERSONALITIES = {
+  director: { name: 'Ruthless Director', icon: '🎬', rate: 1.15, pitch: 0.95, tag: 'High-Impact Pacing' },
+  scientist: { name: 'Data Scientist', icon: '🔬', rate: 1.0, pitch: 1.05, tag: 'Analytical Precision' },
+  partner: { name: 'Viral Partner', icon: '🚀', rate: 1.1, pitch: 1.18, tag: 'High Energy & Creative' },
+  mentor: { name: 'Zen Mentor', icon: '🧘', rate: 0.9, pitch: 0.92, tag: 'Sustainable & Focused' }
+};
+let currentVoicePersonality = 'partner';
+
+function setVoicePersonality(key) {
+  if (VOICE_PERSONALITIES[key]) {
+    currentVoicePersonality = key;
+    if (typeof showToast === 'function') {
+      showToast(`🎙️ Voice Coach: ${VOICE_PERSONALITIES[key].icon} ${VOICE_PERSONALITIES[key].name} (${VOICE_PERSONALITIES[key].tag})`, 'info');
+    }
+  }
+}
+
+function speakText(txt) {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(txt.replace(/[*#_`]/g, ''));
+    const pers = VOICE_PERSONALITIES[currentVoicePersonality] || VOICE_PERSONALITIES.partner;
+    utter.rate = pers.rate || 1.05;
+    utter.pitch = pers.pitch || 1.0;
+
+    AudioVisualizerEngine.setActive(true);
+    utter.onend = () => AudioVisualizerEngine.setActive(false);
+    utter.onerror = () => AudioVisualizerEngine.setActive(false);
+
+    window.speechSynthesis.speak(utter);
   }
 }
 
@@ -2953,6 +3799,7 @@ document.addEventListener('DOMContentLoaded', () => {
   updatePlatformSessionUI(activePlatformSession, activeCreator);
   LiveAlarmEngine.ensureModalInDom();
   updatePermissionsUI(true);
+  AudioVisualizerEngine.init('audioVisualizerCanvas');
   if (typeof updatePageContent === 'function') {
     updatePageContent(activeCreator);
   }

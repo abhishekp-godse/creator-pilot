@@ -1067,11 +1067,13 @@
   </button>
 
   <!-- [MODULE 8] Coach Modal -->
-  <div id="coachModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-[#0f172a] border border-slate-800 rounded-3xl w-full max-w-2xl h-[580px] flex flex-col shadow-2xl overflow-hidden">
-      <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
+  <div id="coachModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="bg-[#0f172a] border border-slate-800 rounded-3xl w-full max-w-2xl h-[640px] flex flex-col shadow-2xl overflow-hidden relative">
+      <div class="px-6 py-3.5 border-b border-slate-800 flex items-center justify-between bg-slate-900/70">
         <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-bold">ðŸ¤–</div>
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-emerald-400 flex items-center justify-center font-bold text-lg shadow-md shadow-indigo-500/20">
+            🎙️
+          </div>
           <div>
             <div class="flex items-center gap-2">
               <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
@@ -1079,32 +1081,55 @@
               </span>
               <h3 class="font-bold text-white text-base">CreatorPilot AI Growth Assistant</h3>
             </div>
-            <p class="text-xs text-slate-400">Voice-Guided Conversational Strategy, Retention Diagnostics & Audience Intelligence</p>
+            <p class="text-[11px] text-slate-400">Autonomous Growth Strategy, Retention Surgery & 1-Click Action Tools</p>
           </div>
         </div>
-        <button onclick="closeModal('coachModal')" class="p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white">âœ•</button>
+        <div class="flex items-center gap-2">
+          <a href="ai-coach.html" class="px-2.5 py-1 rounded-xl bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white border border-indigo-500/30 text-[11px] font-bold transition flex items-center gap-1 shadow-sm" title="Open Full-Screen AI Voice Studio Room">
+            <span>Voice Room</span> <span>↗</span>
+          </a>
+          <button onclick="closeModal('coachModal')" class="p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white">✕</button>
+        </div>
       </div>
 
-      <div id="chatHistory" class="flex-1 overflow-y-auto p-6 space-y-4 text-sm">
+      <!-- Mode Switcher Strip inside modal -->
+      <div class="cp-mode-switcher mx-4 mt-3 shrink-0">
+        <span class="text-[10px] uppercase font-black tracking-wider text-slate-400 px-1 shrink-0">Mode:</span>
+        <button onclick="GeminiGrowthEngine.setMode('strategist')" data-mode="strategist" class="cp-mode-pill active">
+          <span>🧠</span> <span>Strategist</span>
+        </button>
+        <button onclick="GeminiGrowthEngine.setMode('hook_doctor')" data-mode="hook_doctor" class="cp-mode-pill">
+          <span>⚡</span> <span>Hook Doctor</span>
+        </button>
+        <button onclick="GeminiGrowthEngine.setMode('packaging')" data-mode="packaging" class="cp-mode-pill">
+          <span>🎨</span> <span>Packaging Lab</span>
+        </button>
+        <button onclick="GeminiGrowthEngine.setMode('nlp_mindreader')" data-mode="nlp_mindreader" class="cp-mode-pill">
+          <span>💬</span> <span>Audience NLP</span>
+        </button>
+      </div>
+
+      <div id="chatHistory" class="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 text-xs md:text-sm">
         <div class="flex items-start gap-3">
-          <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-indigo-400 shrink-0">ðŸ¤–</div>
-          <div class="bg-slate-800/80 text-slate-200 border border-slate-700/60 rounded-2xl rounded-tl-none px-4 py-3 max-w-[85%] leading-relaxed">
-            Hey Alex! I have been watching your channel metrics. You haven't posted in 6 days and your audience engagement drops after day 7. Ask me what to post this week or why your last video had a retention drop!
+          <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-indigo-400 shrink-0">✨</div>
+          <div class="bg-slate-800/80 text-slate-200 border border-slate-700/60 rounded-2xl rounded-tl-none p-3.5 max-w-[85%] leading-relaxed">
+            Hey Alex! I have been watching your channel metrics. I monitor all 10 modules in real time and can execute studio actions on demand. Select any mode above or ask why your last video had a retention drop!
           </div>
         </div>
       </div>
 
       <!-- Quick prompts -->
-      <div class="px-6 py-2 flex items-center gap-2 overflow-x-auto border-t border-slate-800 bg-slate-900/30">
-        <button onclick="sendChatMessage('Why did my last video flop?')" class="text-xs px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 whitespace-nowrap">Why did my last video flop?</button>
-        <button onclick="sendChatMessage('What should I post this week?')" class="text-xs px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 whitespace-nowrap">What should I post this week?</button>
-        <button onclick="sendChatMessage('How close am I to monetization?')" class="text-xs px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 whitespace-nowrap">Monetization check</button>
+      <div class="px-4 py-2 flex items-center gap-2 overflow-x-auto border-t border-slate-800 bg-slate-900/40 shrink-0">
+        <button onclick="sendChatMessage('Write 2 high-retention hooks for my next video')" class="text-xs px-2.5 py-1 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 whitespace-nowrap border border-indigo-500/30 font-semibold">⚡ High-Retention Hooks</button>
+        <button onclick="sendChatMessage('Simulate high-CTR thumbnail for my topic')" class="text-xs px-2.5 py-1 rounded-xl bg-amber-600/20 hover:bg-amber-600/30 text-amber-300 whitespace-nowrap border border-amber-500/30 font-semibold">🎨 Thumbnail Simulator</button>
+        <button onclick="sendChatMessage('Why did my last video flop?')" class="text-xs px-2.5 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 whitespace-nowrap border border-slate-700">Why did my last video flop?</button>
+        <button onclick="sendChatMessage('Monetization watch hours roadmap')" class="text-xs px-2.5 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 whitespace-nowrap border border-slate-700">Monetization check</button>
       </div>
 
-      <div class="p-4 bg-slate-900/80 border-t border-slate-800 flex items-center gap-2">
-        <button id="micBtn" onclick="toggleVoice()" class="p-2.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white" title="Tap to talk">ðŸŽ¤</button>
-        <input id="chatInput" type="text" placeholder="Ask your coach anything..." class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-indigo-500" onkeydown="if(event.key==='Enter') sendChatMessage()">
-        <button onclick="sendChatMessage()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm">Send</button>
+      <div class="p-3 bg-slate-900/90 border-t border-slate-800 flex items-center gap-2 shrink-0">
+        <button id="micBtn" onclick="toggleVoice()" class="p-2.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white" title="Tap to talk">🎤</button>
+        <input id="chatInput" type="text" placeholder="Ask your coach anything about hooks, titles, pacing..." class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-indigo-500" onkeydown="if(event.key==='Enter') sendChatMessage()">
+        <button onclick="sendChatMessage()" class="px-5 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 text-white font-bold text-xs shadow-md shadow-indigo-600/30 transition">Send</button>
       </div>
     </div>
   </div>

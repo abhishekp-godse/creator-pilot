@@ -118,11 +118,14 @@
           Module 8
         </span>
         <h1 class="text-lg font-bold text-white flex items-center gap-2">
-          🎙️ AI Growth Assistant (Conversational Strategy Room)
+          <span>🎙️</span> <span>AI Growth Assistant & Studio Room</span>
         </h1>
       </div>
       <div class="flex items-center gap-3 text-xs">
-        <span class="text-slate-400 hidden sm:inline">Telemetry Context:</span>
+        <button onclick="openTeleprompter('Welcome to CreatorPilot Teleprompter Studio!\nPosition your eyes on the red horizontal guide.\nDeliver your 5-second live hook with zero preamble.\n\nCut to demo now!', 'Live Hook Teleprompter')" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white border border-indigo-500/30 font-bold transition">
+          <span>🎙️</span> <span>Teleprompter Studio</span>
+        </button>
+        <span class="text-slate-400 hidden lg:inline">Channel Telemetry:</span>
         <span id="coachContextBadge" class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">
           CodeCraft Studio (28.4K Subs)
         </span>
@@ -130,8 +133,51 @@
     </header>
 
     <!-- Full-Height Conversational Workspace -->
-    <main class="flex-1 flex flex-col min-h-0 bg-[#0b0f19] p-4 md:p-6 max-w-5xl w-full mx-auto">
+    <main class="flex-1 flex flex-col min-h-0 bg-[#0b0f19] p-3 md:p-5 max-w-5xl w-full mx-auto">
       
+      <!-- Multi-Modal Intelligence Mode Switcher -->
+      <div class="cp-mode-switcher shrink-0 mb-2.5">
+        <span class="text-[10px] uppercase font-black tracking-wider text-slate-400 px-2 shrink-0 flex items-center gap-1">
+          <span>🎯</span> <span>Mode:</span>
+        </span>
+        <button onclick="GeminiGrowthEngine.setMode('strategist')" data-mode="strategist" class="cp-mode-pill active">
+          <span>🧠</span> <span>Strategist</span>
+        </button>
+        <button onclick="GeminiGrowthEngine.setMode('hook_doctor')" data-mode="hook_doctor" class="cp-mode-pill">
+          <span>⚡</span> <span>Viral Hook Doctor</span>
+        </button>
+        <button onclick="GeminiGrowthEngine.setMode('packaging')" data-mode="packaging" class="cp-mode-pill">
+          <span>🎨</span> <span>Packaging & CTR Lab</span>
+        </button>
+        <button onclick="GeminiGrowthEngine.setMode('nlp_mindreader')" data-mode="nlp_mindreader" class="cp-mode-pill">
+          <span>💬</span> <span>Audience NLP</span>
+        </button>
+      </div>
+
+      <!-- Live Web Audio Frequency Visualizer & Voice Persona Controls Strip -->
+      <div class="shrink-0 mb-3 px-3.5 py-2 rounded-2xl bg-slate-900/70 border border-slate-800 flex items-center justify-between gap-3 shadow-lg">
+        <div class="flex items-center gap-2 shrink-0">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-300 hidden sm:inline">Audio Spectrum</span>
+        </div>
+        
+        <!-- Dancing Canvas Waveform Bars -->
+        <canvas id="audioVisualizerCanvas" class="flex-1 h-8 rounded-lg max-w-md"></canvas>
+
+        <div class="flex items-center gap-2 shrink-0">
+          <span class="text-[10px] text-slate-400 hidden md:inline">Voice Persona:</span>
+          <select onchange="setVoicePersonality(this.value)" class="bg-slate-800/90 border border-slate-700 text-[11px] text-white font-bold rounded-xl px-2.5 py-1 focus:outline-none cursor-pointer">
+            <option value="partner">🚀 Viral Partner</option>
+            <option value="director">🎬 Ruthless Director</option>
+            <option value="scientist">🔬 Data Scientist</option>
+            <option value="mentor">🧘 Zen Mentor</option>
+          </select>
+          <button onclick="LiveAlarmEngine.testAlarmSound()" class="p-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition" title="Test Web Audio Synthesizer">
+            🔔
+          </button>
+        </div>
+      </div>
+
       <!-- Chat Transcript Window -->
       <div id="chatHistory" class="flex-1 overflow-y-auto space-y-4 pr-2 text-xs md:text-sm">
         <div class="flex items-start gap-3">
@@ -140,11 +186,12 @@
             <div class="font-bold text-white mb-1 flex flex-wrap items-center gap-2">
               <span>CreatorPilot AI Growth Assistant</span>
               <span class="text-[10px] px-2 py-0.5 rounded-full bg-gradient-to-r from-indigo-500/20 to-emerald-500/20 text-indigo-300 border border-indigo-500/30 font-semibold">✨ Powered by Gemini 1.5 Architecture</span>
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">Zero-Repetition Memory Active</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">Zero-Repetition Active</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-fuchsia-500/20 text-fuchsia-300 border border-fuchsia-500/30 font-bold">4 Specialized Modes</span>
             </div>
-            Hello Alex! I am your strategic AI Growth Partner, powered by Gemini architecture. I monitor all 10 modules in real time and maintain full conversational memory so our discussions explore fresh tactical angles without repeating the same answers.
+            Hello Alex! I am your innovative AI Growth Partner. I do not merely talk — I have <strong>live agent tools</strong> to save ideas directly into your Idea Vault, inject tasks into your Weekly Planner, arm production deadline alarms, and open scripts in the studio Teleprompter!
             <div class="mt-2 text-xs text-slate-400">
-              Try asking <em>"Why did my last video flop?"</em> multiple times, or ask <em>"Give me another reason"</em> or <em>"What should I post this week?"</em> to see how each turn analyzes a completely different dimension!
+              Select any of the 4 specialized modes above (<strong>🧠 Strategist</strong>, <strong>⚡ Viral Hook Doctor</strong>, <strong>🎨 Packaging Lab</strong>, or <strong>💬 Audience NLP</strong>) or ask a question below to see rich generative UI cards in action!
             </div>
           </div>
         </div>
@@ -153,38 +200,26 @@
       <!-- Quick Strategy Suggestions -->
       <div class="py-2.5 flex items-center gap-2 overflow-x-auto shrink-0 border-t border-slate-800/80">
         <span class="text-[10px] uppercase font-bold text-slate-500 shrink-0">Prompts:</span>
+        <button onclick="sendChatMessage('Write 2 high-retention hooks for my next video')" class="text-xs px-3 py-1.5 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 hover:text-white whitespace-nowrap transition border border-indigo-500/30 font-semibold">
+          ⚡ 2 High-Retention Hooks
+        </button>
+        <button onclick="sendChatMessage('Simulate high-CTR thumbnail for my topic')" class="text-xs px-3 py-1.5 rounded-xl bg-amber-600/20 hover:bg-amber-600/30 text-amber-300 hover:text-white whitespace-nowrap transition border border-amber-500/30 font-semibold">
+          🎨 Thumbnail Simulator
+        </button>
+        <button onclick="sendChatMessage('What are my viewers begging me to build?')" class="text-xs px-3 py-1.5 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 hover:text-white whitespace-nowrap transition border border-emerald-500/30 font-semibold">
+          💬 Audience Comment Requests
+        </button>
         <button onclick="sendChatMessage('Why did my last video flop?')" class="text-xs px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white whitespace-nowrap transition border border-slate-700/50">
           Why did my last video flop?
         </button>
-        <button onclick="sendChatMessage('Tell me another reason')" class="text-xs px-3 py-1.5 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 hover:text-white whitespace-nowrap transition border border-indigo-500/30">
-          🔄 Tell me another reason
+        <button onclick="sendChatMessage('Monetization watch hours roadmap')" class="text-xs px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white whitespace-nowrap transition border border-slate-700/50">
+          💰 Monetization roadmap
         </button>
         <button onclick="sendChatMessage('How much should I charge sponsors for brand deals?')" class="text-xs px-3 py-1.5 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 hover:text-white whitespace-nowrap transition border border-emerald-500/30">
-          💰 Sponsorship Rate Card
+          💵 Sponsorship Rate Card
         </button>
-        <button onclick="sendChatMessage('What microphone and camera setup should I buy?')" class="text-xs px-3 py-1.5 rounded-xl bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 hover:text-white whitespace-nowrap transition border border-cyan-500/30">
-          🎙️ Studio Gear & Mic
-        </button>
-        <button onclick="sendChatMessage('How to edit videos twice as fast')" class="text-xs px-3 py-1.5 rounded-xl bg-amber-600/20 hover:bg-amber-600/30 text-amber-300 hover:text-white whitespace-nowrap transition border border-amber-500/30">
-          ⚡ Edit 2x Faster
-        </button>
-        <button onclick="sendChatMessage('How do I prevent creator burnout?')" class="text-xs px-3 py-1.5 rounded-xl bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 hover:text-white whitespace-nowrap transition border border-rose-500/30">
-          🛡️ Burnout Guard
-        </button>
-        <button onclick="sendChatMessage('What should I post this week?')" class="text-xs px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white whitespace-nowrap transition border border-slate-700/50">
-          What should I post this week?
-        </button>
-        <button onclick="sendChatMessage('Give me a high-velocity trend idea')" class="text-xs px-3 py-1.5 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 hover:text-white whitespace-nowrap transition border border-indigo-500/30">
-          🔥 High-velocity trend
-        </button>
-        <button onclick="sendChatMessage('How close am I to monetization?')" class="text-xs px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white whitespace-nowrap transition border border-slate-700/50">
-          Monetization check
-        </button>
-        <button onclick="sendChatMessage('The 3-part title CTR formula')" class="text-xs px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white whitespace-nowrap transition border border-slate-700/50">
-          Title CTR formula
-        </button>
-        <button onclick="sendChatMessage('Summarize viewer sentiment feedback')" class="text-xs px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white whitespace-nowrap transition border border-slate-700/50">
-          Sentiment summary
+        <button onclick="sendChatMessage('Omnichannel YouTube + Instagram pacing')" class="text-xs px-3 py-1.5 rounded-xl bg-fuchsia-600/20 hover:bg-fuchsia-600/30 text-fuchsia-300 hover:text-white whitespace-nowrap transition border border-fuchsia-500/30">
+          🌐 YouTube + IG Pacing
         </button>
       </div>
 
@@ -193,7 +228,7 @@
         <button id="micBtn" onclick="toggleVoice()" class="p-3 rounded-xl bg-slate-800 text-slate-300 hover:text-white transition hover:scale-105 active:scale-95" title="Tap to speak (Web Speech API)">
           🎤
         </button>
-        <input id="chatInput" type="text" placeholder="Ask your coach anything about titles, pacing, or topics..." class="flex-1 bg-transparent text-sm text-white focus:outline-none px-2" onkeydown="if(event.key==='Enter') sendChatMessage()" />
+        <input id="chatInput" type="text" placeholder="Ask your coach anything about hooks, titles, pacing, or comments..." class="flex-1 bg-transparent text-sm text-white focus:outline-none px-2" onkeydown="if(event.key==='Enter') sendChatMessage()" />
         <button onclick="sendChatMessage()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 text-white font-bold text-xs shadow-md shadow-indigo-600/30 transition">
           Send →
         </button>

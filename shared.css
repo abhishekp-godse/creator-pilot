@@ -537,3 +537,180 @@ canvas {
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.25));
 }
 
+/* ==========================================================================
+   AI GROWTH ASSISTANT & VOICE ROOM 2026 NEXT-GEN INNOVATION SUITE
+   - Mode Switcher Pills (Strategist, Hook Doctor, Packaging, NLP Mind-Reader)
+   - Generative UI Chat Cards & Visual Previews
+   - Live Tool Action Badges with 1-Click State Transitions
+   - Teleprompter Studio & Audio Visualizer Canvas
+   ========================================================================== */
+
+/* Mode Switcher Bar & Pills */
+.cp-mode-switcher {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.35rem 0.5rem;
+  border-radius: 1rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  backdrop-filter: var(--glass-blur);
+}
+
+.cp-mode-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 0.85rem;
+  font-size: 0.725rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cp-mode-pill:hover {
+  color: var(--text-primary);
+  background: var(--bg-surface-hover);
+  border-color: var(--border-medium);
+}
+
+.cp-mode-pill.active {
+  color: #ffffff;
+  background: var(--accent-gradient);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 16px -2px var(--accent-glow);
+  transform: translateY(-1px);
+}
+
+/* Generative UI Response Card Container */
+.cp-gen-card {
+  border-radius: 1rem;
+  padding: 1rem;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-medium);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+  backdrop-filter: var(--glass-blur);
+  transition: border-color 0.25s ease;
+}
+
+.cp-gen-card:hover {
+  border-color: var(--border-highlight);
+}
+
+/* Hook Showdown Grid */
+.cp-hook-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+  margin: 0.75rem 0;
+}
+
+.cp-hook-card {
+  padding: 0.85rem;
+  border-radius: 0.85rem;
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.2s ease;
+}
+
+.cp-hook-card:hover {
+  border-color: var(--accent-primary);
+  transform: translateY(-2px);
+  background: rgba(22, 33, 58, 0.65);
+}
+
+/* Simulated Thumbnail Preview */
+.cp-thumb-preview {
+  aspect-ratio: 16 / 9;
+  border-radius: 0.85rem;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.85rem;
+  box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Action Buttons Bar */
+.cp-action-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.cp-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.cp-action-btn:hover {
+  background: var(--accent-primary);
+  border-color: var(--border-highlight);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px -2px var(--accent-glow);
+}
+
+.cp-action-btn.executed {
+  background: rgba(16, 185, 129, 0.2) !important;
+  border-color: rgba(16, 185, 129, 0.5) !important;
+  color: #34d399 !important;
+  cursor: default;
+  transform: none !important;
+}
+
+/* Teleprompter Studio Modal */
+.cp-teleprompter-glass {
+  background: rgba(6, 9, 15, 0.95);
+  backdrop-filter: blur(32px);
+  border: 1px solid var(--border-highlight);
+  box-shadow: 0 25px 70px -10px rgba(0, 0, 0, 0.9);
+}
+
+.cp-teleprompter-text {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  line-height: 1.6;
+  font-weight: 600;
+  transition: font-size 0.2s ease;
+  scroll-behavior: smooth;
+}
+
+.cp-teleprompter-text.mirrored {
+  transform: scaleX(-1);
+}
+
+/* Audio Visualizer Spectrum Canvas */
+#audioVisualizerCanvas {
+  background: radial-gradient(circle at center, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.85rem;
+}
+
+
